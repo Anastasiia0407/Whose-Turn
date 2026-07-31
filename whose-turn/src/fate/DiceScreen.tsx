@@ -72,8 +72,8 @@ export function DiceScreen({ chore, members, onSettled }: Props) {
           ? `${winner.name} rolled the highest and gets the chore.`
           : null
       }
-    >
-      <div className={styles.roster}>
+      belowNav={
+        <div className={styles.roster}>
         {members.map((m) => (
           <StaticRow
             key={m.id}
@@ -81,9 +81,10 @@ export function DiceScreen({ chore, members, onSettled }: Props) {
             label={m.name}
             leading={<MemberAvatar color={m.color} size="sm" />}
           />
-        ))}
-      </div>
-
+          ))}
+        </div>
+      }
+    >
       <div className={styles.dice} data-count={members.length}>
         {members.map((m, i) => (
           <Die

@@ -29,6 +29,14 @@
   flex: 0 0 auto;
 }
 
+/* Fixed row below the nav (node 153:35, height 46). It never flexes — the
+   rhythm is nav, 24, chips, 24, dice area, 24, caption+CTA, and only the dice
+   area absorbs viewport height. The 24s come from .body's gap. */
+.belowNav {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
 /* Wheel-Section — node 86:97: flex 1, centred. */
 .hero {
   display: flex;
@@ -39,7 +47,6 @@
   gap: var(--spacing-xl);
   width: 100%;
   min-height: 0;
-  padding-block: var(--spacing-md);
 }
 
 /* Node 92:385: caption + CTA, gap 16. */

@@ -11,6 +11,12 @@ type FateLayoutProps = {
   disabled: boolean
   /** Announced politely once the draw settles. */
   announcement: string | null
+  /**
+   * Fixed row directly below the nav — the dice screen's member chips.
+   * Sits outside `hero` so it keeps its place at the top instead of being
+   * vertically centred along with the dice.
+   */
+  belowNav?: ReactNode
   children: ReactNode
 }
 
@@ -25,6 +31,7 @@ export function FateLayout({
   onStart,
   disabled,
   announcement,
+  belowNav,
   children,
 }: FateLayoutProps) {
   const navigate = useNavigate()
@@ -44,6 +51,8 @@ export function FateLayout({
             {choreName}
           </PillChip>
         </div>
+
+        {belowNav ? <div className={styles.belowNav}>{belowNav}</div> : null}
 
         <div className={styles.hero}>{children}</div>
 
