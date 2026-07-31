@@ -54,8 +54,12 @@ export function DiceScreen({ chore, members, onSettled }: Props) {
             return
           }
 
-          // Sound runs for the throw only, ending when the dice settle.
-          play('dice', { durationMs: TUMBLE_MS })
+          // Sound runs for the throw only, ending when the dice settle — the
+          // applause then comes up during the winner highlight that follows.
+          play('dice', {
+            durationMs: TUMBLE_MS,
+            revealInMs: TUMBLE_MS + HIGHLIGHT_MS,
+          })
           setTumbling(true)
           window.setTimeout(() => {
             setTumbling(false)

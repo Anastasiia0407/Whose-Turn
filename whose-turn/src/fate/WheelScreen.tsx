@@ -13,6 +13,8 @@ type Props = {
 }
 
 const SPIN_SECONDS = 3.8
+/** The wheel holds its final position briefly before the result appears. */
+const REVEAL_MS = SPIN_SECONDS * 1000 + 400
 
 /**
  * Wheel mode — Figma 86:78.
@@ -50,12 +52,17 @@ export function WheelScreen({ chore, members, onSettled }: Props) {
             return
           }
 
-          // 1.71s clip against a 3.8s spin -> loops, then fades as it settles.
-          play('wheel', { durationMs: SPIN_SECONDS * 1000 })
+          // 1.71s clip against a 3.8s spin -> loops. `revealInMs` matches the
+          // resolve below, so the applause comes up over the spin's last
+          // moments; the spin timing itself is unchanged.
+          play('wheel', {
+            durationMs: SPIN_SECONDS * 1000,
+            revealInMs: REVEAL_MS,
+          })
           setDuration(SPIN_SECONDS)
           // Next frame, so the transition has a start value to animate from.
           requestAnimationFrame(() => setRotation(solved))
-          window.setTimeout(resolve, SPIN_SECONDS * 1000 + 400)
+          window.setTimeout(resolve, REVEAL_MS)
         }),
       onSettled,
     )

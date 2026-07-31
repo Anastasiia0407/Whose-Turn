@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell, Button, Heading, PillChip, Subtitle } from '../ui'
 import { resultPillCopy } from './choreCopy'
-import { play, stop } from '../audio/player'
+import { startApplause, stopApplause } from '../audio/player'
 import confetti from '../assets/illustrations/confetti.png'
 import type { Chore, Member } from '../data'
 import styles from './ResultScreen.module.css'
@@ -22,10 +22,15 @@ type Props = {
 export function ResultScreen({ chore, winner, onAccept }: Props) {
   const navigate = useNavigate()
 
-  // Once, on appearance. No durationMs -> no loop, no fade; it simply plays out.
+  // The applause is normally ALREADY playing by now — the draw screen started
+  // it a lead-in before this screen existed, so it carries across the cut.
+  // This call claims it without restarting it, and only genuinely starts the
+  // sound on the fallback path where it had not buffered in time.
+  //
+  // Leaving fades it out rather than cutting, whether or not it had finished.
   useEffect(() => {
-    play('winner')
-    return stop
+    startApplause()
+    return () => stopApplause()
   }, [])
 
   function accept() {

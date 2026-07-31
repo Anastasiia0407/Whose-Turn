@@ -35,9 +35,11 @@ export function useDraw(members: Member[]) {
       running.current = true
       setPhase('running')
 
-      // Warmed HERE, not on the result screen — by then it is too late for the
-      // fetch to finish before the sting is supposed to fire.
-      preload('winner')
+      // Warmed HERE, not on the result screen — the applause has to be ready
+      // to start BEFORE that screen exists, so waiting for its mount is far
+      // too late. If it is still not buffered by then, the player falls back
+      // to starting it at the reveal rather than delaying anything.
+      preload('applause')
 
       // Decided FIRST. Everything after this point is presentation.
       const picked = drawWinner(members)

@@ -13,6 +13,8 @@ type Props = {
 }
 
 const HALF_FLIP_MS = 260
+/** The coin rests on its landed face before the result appears. */
+const SETTLE_MS = 500
 
 /**
  * Coin mode — Figma 92:331. Reachable only with exactly two members.
@@ -47,8 +49,12 @@ export function CoinScreen({ chore, members, onSettled }: Props) {
           }
 
           // Flip length varies with parity (6 or 7 half-flips), so the exact
-          // duration is handed over and the player decides loop vs fade.
-          play('coin', { durationMs: flips * HALF_FLIP_MS })
+          // duration is handed over and the player decides loop vs fade. The
+          // reveal shifts with it, and the applause lead-in follows.
+          play('coin', {
+            durationMs: flips * HALF_FLIP_MS,
+            revealInMs: flips * HALF_FLIP_MS + SETTLE_MS,
+          })
           setFlipping(true)
           let done = 0
           const tick = window.setInterval(() => {
@@ -59,7 +65,7 @@ export function CoinScreen({ chore, members, onSettled }: Props) {
               window.clearInterval(tick)
               setFace(landsOn)
               setFlipping(false)
-              window.setTimeout(resolve, 500)
+              window.setTimeout(resolve, SETTLE_MS)
             }
           }, HALF_FLIP_MS)
         }),
