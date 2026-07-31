@@ -1,0 +1,64 @@
+/* Fate-mode picker — Figma 130:183 / 104:682: three rows, gap 16. */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+}
+
+/* The row itself is the control, so the button adds no chrome of its own. */
+.option {
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  transition:
+    transform 60ms ease-out,
+    opacity 120ms ease-out;
+}
+
+.option:active:not(:disabled) {
+  transform: translate(var(--shadow-offset-lg), var(--shadow-offset-lg));
+}
+
+/* Disabled fades the FILL and TEXT only.
+   Element-level `opacity` would composite the hard shadow along with
+   everything else, turning the solid #332014 offset into washed-out grey —
+   there is no soft or grey shadow anywhere in this design, in any state. So
+   the shadow and the outline stay at full strength and the surface colours
+   are mixed toward the canvas instead. */
+.option:disabled {
+  cursor: not-allowed;
+}
+
+/* The row inside carries the surface, so it is the thing that fades. */
+.option:disabled > * {
+  background: color-mix(
+    in srgb,
+    var(--color-background-surface) 50%,
+    var(--color-background-primary)
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-text-heading) 45%,
+    var(--color-background-primary)
+  );
+}
+
+.coinBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Node 130:202 */
+.note {
+  padding-inline: var(--spacing-inline);
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}

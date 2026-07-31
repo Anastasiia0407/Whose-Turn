@@ -1,0 +1,122 @@
+/* ---------------------------------------------------------------------------
+   Design tokens — the single source of truth for every visual value.
+   No component file may contain a raw hex or a raw px that belongs here.
+
+   SOURCE: Figma variables in file ow8Eo53KIe4QrORvA7TQ2E, read via Figma MCP
+   (get_variable_defs). Names mirror the Figma variable paths so the two stay
+   traceable: Figma `color/accent/primary` -> `--color-accent-primary`.
+
+   Values marked NOT-IN-FIGMA are used repeatedly in the design but have no
+   Figma variable yet. They are named after what they do and listed here so
+   they still live in the token layer rather than being inlined.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* -- Color: Figma variables ---------------------------------------- */
+  --color-background-primary: #fff9ee;
+  --color-background-surface: #ffffff;
+  --color-border-default: #332014;
+  --color-brown-800: #332014;
+  --color-text-heading: #332014;
+  --color-text-primary: #1a1818;
+  --color-text-secondary: #7a685c;
+  --color-accent-primary: #d85a38;
+  --color-accent-secondary: #e8a838;
+  --color-accent-success: #02ab0d;
+
+  /* -- Color: NOT-IN-FIGMA ------------------------------------------- */
+  /* Destructive icon button fill, node 76:57 on frame 70:8 (raw hex there). */
+  --color-accent-danger: #d83838;
+  /* Bottom-sheet scrim, nodes 65:42 / 130:182 (raw rgba there). */
+  --color-scrim: rgba(51, 32, 20, 0.45);
+  /* Onboarding progress-bar track, nodes 92:272 / 92:273 (raw hex there).
+     The filled portion uses --color-brown-800. */
+  --color-progress-track: #e5d9cf;
+  /* Text that sits on a filled accent surface. */
+  --color-text-on-accent: #ffffff;
+
+  /* -- Spacing: Figma variables -------------------------------------- */
+  --spacing-2xs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
+  --spacing-lg: 14px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 40px;
+
+  /* -- Spacing: NOT-IN-FIGMA ----------------------------------------- */
+  /* 12px: avatar row gap + sheet header inset. 32px: sheet top padding. */
+  --spacing-inline: 12px;
+  --spacing-sheet-top: 32px;
+
+  /* -- Radius: Figma variables --------------------------------------- */
+  --radius-sm: 10px;
+  --radius-md: 24px;
+  --radius-full: 100px;
+
+  /* -- Radius: NOT-IN-FIGMA ------------------------------------------ */
+  --radius-avatar: 18px;
+
+  /* -- Border width: NOT-IN-FIGMA (raw 2px/3px throughout) ------------ */
+  --border-sm: 2px;
+  --border-lg: 3px;
+
+  /* -- Elevation: NOT-IN-FIGMA (raw drop-shadows throughout) ---------- */
+  /* Hard offset, zero blur. This IS the style — never soften it. */
+  --shadow-offset-sm: 2px;
+  --shadow-offset-lg: 4px;
+  --shadow-hard-sm: var(--shadow-offset-sm) var(--shadow-offset-sm) 0
+    var(--color-border-default);
+  --shadow-hard-lg: var(--shadow-offset-lg) var(--shadow-offset-lg) 0
+    var(--color-border-default);
+
+  /* -- Typography: families ------------------------------------------ */
+  --font-display: 'Corben', Georgia, 'Times New Roman', serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+  /* -- Typography: Figma text styles --------------------------------- */
+  /* Heading/H1 — Corben Bold 30/40 */
+  --type-h1-family: var(--font-display);
+  --type-h1-weight: 700;
+  --type-h1-size: 30px;
+  --type-h1-line: 40px;
+
+  /* Body/Bold — Corben Bold 16/24 */
+  --type-body-bold-family: var(--font-display);
+  --type-body-bold-weight: 700;
+  --type-body-bold-size: 16px;
+  --type-body-bold-line: 24px;
+
+  /* Body/Regular — DM Sans Medium 16/24 */
+  --type-body-family: var(--font-body);
+  --type-body-weight: 500;
+  --type-body-size: 16px;
+  --type-body-line: 24px;
+
+  /* Label/Section — Corben Bold 12, uppercase. Figma records lineHeight 100,
+     which is 100% (i.e. 1), not 100px. */
+  --type-label-family: var(--font-display);
+  --type-label-weight: 700;
+  --type-label-size: 12px;
+  --type-label-line: 1;
+
+  /* -- Typography: NOT-IN-FIGMA (real sizes, no variable) ------------- */
+  /* Bottom-sheet header, nodes 61:60 / 64:8 / 130:185. */
+  --type-sheet-title-size: 20px;
+
+  /* -- Layout -------------------------------------------------------- */
+  --layout-canvas-width: 390px; /* Figma design canvas */
+  --layout-gutter: var(--spacing-xl); /* 16px side inset on every screen */
+  --layout-min-width: 360px; /* fluid floor */
+  --layout-tap-target: 44px;
+
+  /* -- Focus ring ---------------------------------------------------- */
+  /* UNUSED — DO NOT APPLY. Focus indicators are intentionally absent by design
+     decision (see CLAUDE.md). The value is retained only so the token layer is
+     not altered; nothing references it, and nothing should. Removing every
+     visual focus change was deliberate, not an oversight. */
+  --focus-ring: 0 0 0 3px var(--color-background-primary),
+    0 0 0 6px var(--color-border-default);
+}

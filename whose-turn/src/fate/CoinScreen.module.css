@@ -1,0 +1,44 @@
+/* Coin — Figma 104:451: 200px circle, 3px outline, hard shadow, 72px initial. */
+
+.coin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(160px, 52vw, 200px);
+  aspect-ratio: 1;
+  border: var(--border-lg) solid var(--color-border-default);
+  border-radius: 50%;
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.initial {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: clamp(56px, 18vw, 72px);
+  line-height: 1.1;
+  color: var(--color-text-heading);
+  text-transform: uppercase;
+}
+
+/* Squash on the vertical axis to read as a flip, plus a small arc. */
+.flipping {
+  animation: flip 260ms ease-in-out infinite;
+}
+
+@keyframes flip {
+  0% {
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    transform: scaleY(0.06) translateY(-18px);
+  }
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flipping {
+    animation: none;
+  }
+}

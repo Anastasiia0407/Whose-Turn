@@ -1,0 +1,133 @@
+/* Home — Figma frames 75:16 / 2:141 / 70:8.
+   Root gaps come from AppShell; this file covers the three inner containers. */
+
+/* Frame 75:16's root is pt-2 with gap-24, so the header sits 26px below the
+   44px status bar — i.e. y=70 in the frame. AppShell places the status bar but
+   not that gap, so it is added here rather than globally: onboarding's frames
+   (82:10 / 83:18) use pt-36 with no gap and must not shift. */
+.body {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  padding-block-start: calc(var(--spacing-2xs) + var(--spacing-3xl));
+  min-height: 0;
+}
+
+/* Header — node 75:26: gap 24, pt 12, pb 2, items centred. */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  padding-block: 12px var(--spacing-2xs);
+  padding-inline: var(--spacing-2xs);
+}
+
+/* Below the 390 reference the gap tightens so the wordmark keeps its 30px token
+   size on ONE line — it still fits at 360 this way. */
+@media (max-width: 389.98px) {
+  .header {
+    gap: var(--spacing-md);
+  }
+}
+
+/* Titles — node 75:27: flex 1, gap 4. */
+.titles {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  padding: var(--spacing-2xs);
+}
+
+/* The wordmark is one line, always — node 75:28 is a 282x40 box, and 40 is a
+   single line at Heading/H1 (30/40).
+   It holds its 30px token size at 360 and above. Below 360 the text (257px at
+   30px) cannot physically fit beside the 44px members button, so it scales down
+   just enough rather than wrapping — wrapping would break the 86px header and
+   shove the whole layout down. This is the one place outside login where the
+   type scales, and only under 360. */
+.titles h1 {
+  white-space: nowrap;
+  font-size: min(var(--type-h1-size), calc((100vw - 88px) / 8.8));
+}
+
+.titles p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* List container — node 75:33: flex 1, gap 8.
+   Shrinkable, so the list inside it can scroll instead of the whole page. */
+.listSection {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  min-height: 0;
+  padding-inline: var(--spacing-2xs);
+}
+
+/* Node 75:35: gap 16.
+   The ONLY scrolling region on home — header and footer stay put. Padding is
+   generous enough that the 4px hard shadows are not clipped by the scrollport. */
+.list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  min-height: 0;
+  /* A vertical scrollport also clips horizontally, which was cutting the 4px
+     hard shadows off. The padding gives the shadow its own room and the equal
+     negative margin pulls the rows back onto the 16px gutter, so the shadow is
+     fully visible without the row shifting inwards. */
+  padding: var(--spacing-2xs) var(--spacing-md) var(--spacing-md);
+  margin-inline: calc(var(--spacing-md) * -1);
+  overflow-y: auto;
+  overflow-x: clip; /* vertical scrolling only — never a sideways scrollbar */
+  /* Keep the scroll contained: no chaining to the page behind it. */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Bottom container — node 75:43: gap 16. */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+  padding-block: var(--spacing-2xs);
+}
+
+/* "Add a new chore" is cream-filled on the home frames (nodes 75:44, 1:125,
+   70:36), unlike the white secondary button used inside the sheets. */
+.addChore {
+  background: var(--color-background-primary);
+}
+
+/* Long chore names truncate to one line, as the frames show. */
+.choreLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -- States ------------------------------------------------------------- */
+
+.status {
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-accent-danger);
+}
+

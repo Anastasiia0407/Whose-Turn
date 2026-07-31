@@ -1,0 +1,55 @@
+/* Context chip. Geometry from Figma nodes 86:91 (green chore chip on the fate
+   screens) and 38:26 (white chip on the result screen).
+
+   NOTE: Figma uses radius 24 here, not the full 100 pill. At the fixed 44px
+   height that still reads as a pill, so the shape matches the design while
+   staying on the token scale. */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  height: var(--layout-tap-target);
+  padding-inline: var(--spacing-xl);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-sm);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-heading);
+  /* The chip never grows to fit its text — node 92:290 is a fixed 190px with a
+     126px text node, so long chore names are cut, not allowed to overflow. */
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Single line, ellipsis at the END. */
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toneSuccess {
+  background: var(--color-accent-success);
+}
+
+.toneSurface {
+  background: var(--color-background-surface);
+}
+
+.toneCanvas {
+  background: var(--color-background-primary);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.icon {
+  flex-shrink: 0;
+}

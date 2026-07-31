@@ -1,0 +1,141 @@
+/* Shared neo-brutalist button. Every value comes from tokens.css. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  border-style: solid;
+  border-color: var(--color-border-default);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+  text-align: center;
+  /* The sticker press: shadow collapses and the element moves into its place. */
+  transition:
+    transform 60ms ease-out,
+    box-shadow 60ms ease-out;
+}
+
+/* -- Sizing / shape variants ------------------------------------------ */
+
+.primary,
+.secondary {
+  width: 100%;
+  padding-block: var(--spacing-xl);
+  padding-inline: var(--spacing-2xs);
+  border-width: var(--border-lg);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.icon {
+  width: var(--layout-tap-target);
+  height: var(--layout-tap-target);
+  padding: var(--spacing-2xs);
+  border-width: var(--border-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+/* -- Fills ------------------------------------------------------------- */
+
+.primary {
+  background: var(--color-accent-primary);
+  color: var(--color-text-on-accent);
+}
+
+.secondary {
+  background: var(--color-background-surface);
+  color: var(--color-text-heading);
+}
+
+/* Icon-button fills. Figma uses a different fill per context:
+   amber members button (65:20), white back (86:89), cream sheet close (61:61),
+   red delete (76:57). */
+.toneSurface {
+  background: var(--color-background-surface);
+  color: var(--color-text-heading);
+}
+.toneCanvas {
+  background: var(--color-background-primary);
+  color: var(--color-text-heading);
+}
+.toneAccent {
+  background: var(--color-accent-secondary);
+  color: var(--color-text-heading);
+}
+.toneDanger {
+  background: var(--color-accent-danger);
+  color: var(--color-text-on-accent);
+}
+
+/* -- States ------------------------------------------------------------ */
+
+.primary:active:not(:disabled),
+.secondary:active:not(:disabled) {
+  transform: translate(var(--shadow-offset-lg), var(--shadow-offset-lg));
+  box-shadow: none;
+}
+
+.icon:active:not(:disabled) {
+  transform: translate(var(--shadow-offset-sm), var(--shadow-offset-sm));
+  box-shadow: none;
+}
+
+/* Disabled fades the FILL and TEXT only.
+   Element-level `opacity` would composite the hard shadow along with
+   everything else, turning the solid #332014 offset into washed-out grey —
+   there is no soft or grey shadow anywhere in this design, in any state. So
+   the shadow and the outline stay at full strength and the surface colours
+   are mixed toward the canvas instead. */
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.primary:disabled {
+  background: color-mix(
+    in srgb,
+    var(--color-accent-primary) 50%,
+    var(--color-background-primary)
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-text-on-accent) 50%,
+    var(--color-background-primary)
+  );
+}
+
+.secondary:disabled,
+.icon:disabled {
+  color: color-mix(
+    in srgb,
+    var(--color-text-heading) 45%,
+    var(--color-background-primary)
+  );
+}
+
+.secondary:disabled {
+  background: color-mix(
+    in srgb,
+    var(--color-background-surface) 50%,
+    var(--color-background-primary)
+  );
+}
+
+.icon:disabled.toneSurface {
+  background: color-mix(in srgb, var(--color-background-surface) 50%, var(--color-background-primary));
+}
+.icon:disabled.toneCanvas {
+  background: var(--color-background-primary);
+}
+.icon:disabled.toneAccent {
+  background: color-mix(in srgb, var(--color-accent-secondary) 50%, var(--color-background-primary));
+}
+.icon:disabled.toneDanger {
+  background: color-mix(in srgb, var(--color-accent-danger) 50%, var(--color-background-primary));
+}
+
+/* No focus styling by design — buttons are pixel-identical at rest and when
+   focused. See CLAUDE.md. Do not add a focus rule here. */

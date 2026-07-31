@@ -1,0 +1,96 @@
+/* Global reset + page defaults. Everything here reads from tokens.css. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  /* Outline is pinned off at rest as well as on focus, so computed styles are
+     identical in both states. See the focus note below. */
+  outline: 0 none transparent;
+  outline-offset: 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh; /* fallback for browsers without dvh */
+  min-height: 100dvh;
+  background: var(--color-background-primary);
+  color: var(--color-text-heading);
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-variation-settings: 'opsz' 14;
+  -webkit-font-smoothing: antialiased;
+  /* No horizontal overflow from 360px up. */
+  overflow-x: hidden;
+}
+
+/* Focus indicators are INTENTIONALLY ABSENT — a design decision, see CLAUDE.md.
+   No control may change appearance on focus anywhere in the app, so the browser
+   default ring is suppressed globally and nothing replaces it.
+
+   Focusability itself is untouched: every control stays keyboard-reachable and
+   operable. Only the visual indicator is gone.
+
+   Width and colour are pinned as well as style (here and in the `*` reset
+   above), so computed values are byte-identical focused and unfocused.
+   `outline: none` alone would leave the UA's focus-ring width in the computed
+   style — harmless, since style:none paints nothing, but it makes "is anything
+   different?" harder to answer.
+
+   Do not reintroduce a focus style here or in any component. */
+:focus,
+:focus-visible,
+:focus-within {
+  outline: 0 none transparent;
+  outline-offset: 0;
+}
+
+/* Firefox's inner focus ring on buttons/inputs is separate from `outline`. */
+::-moz-focus-inner {
+  border: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

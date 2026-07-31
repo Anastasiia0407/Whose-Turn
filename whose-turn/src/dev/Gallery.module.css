@@ -1,0 +1,101 @@
+/* Dev-only. Not shipped to users, but still token-driven so it stays honest
+   about what the primitives actually look like. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4xl);
+  padding-block: var(--spacing-3xl);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.heading {
+  font-family: var(--type-h1-family);
+  font-weight: var(--type-h1-weight);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  color: var(--color-text-heading);
+}
+
+.accent {
+  color: var(--color-accent-primary);
+}
+
+.caption {
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-inline);
+}
+
+/* Swatch grid for the member palette. */
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-inline);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-secondary);
+}
+
+.typeSpecimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.h1 {
+  font-family: var(--type-h1-family);
+  font-weight: var(--type-h1-weight);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  color: var(--color-text-heading);
+}
+
+.bodyBold {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+  color: var(--color-text-heading);
+}
+
+.body {
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}
+
+.cardDemo {
+  padding: var(--spacing-2xl);
+}

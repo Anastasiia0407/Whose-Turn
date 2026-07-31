@@ -1,0 +1,40 @@
+/* Dice mode — Figma 92:277 / 157:45: a member roster above, the dice below. */
+
+.roster {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+/* Node 157:62: compact chips, one per member. */
+.rosterChip {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  min-height: 46px;
+  padding-block: var(--spacing-inline);
+  padding-inline: var(--spacing-inline) var(--spacing-xl);
+  font-size: var(--type-label-size);
+}
+
+.dice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(var(--spacing-md), 3vw, var(--spacing-2xl));
+  width: 100%;
+  padding-block: var(--spacing-2xl);
+}
+
+/* Figma staggers the dice diagonally across the area rather than lining them
+   up in a row (nodes 104:476 at y=228, 104:478 at y=96). */
+.dice > *:nth-child(odd) {
+  transform: translateY(clamp(10px, 4vw, 26px));
+}
+
+.dice > *:nth-child(even) {
+  transform: translateY(clamp(-26px, -4vw, -10px));
+}

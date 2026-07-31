@@ -1,0 +1,38 @@
+/* Member identity dot. Geometry from Figma nodes 69:74 (32px, with initial)
+   and 157:63 (20px, plain dot on the dice roster).
+
+   The fill is never hardcoded — it is passed in from colorForMemberIndex via
+   the --member-color custom property. */
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--member-color);
+  border-style: solid;
+  border-color: var(--color-border-default);
+  border-radius: var(--radius-avatar);
+  /* K: ONE rule — the ink initial on every member colour, matching the outline.
+     White measured 2.08:1 on amber, which is unreadable. Ink is 7.43:1 there
+     and never worse than 3.33:1 on any palette entry. */
+  color: var(--color-text-heading);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+}
+
+.md {
+  width: 32px;
+  height: 32px;
+  border-width: var(--border-sm);
+}
+
+.sm {
+  width: 20px;
+  height: 20px;
+  border-width: 1px;
+}

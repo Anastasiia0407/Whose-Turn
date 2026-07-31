@@ -1,0 +1,42 @@
+/* Swipe-to-reveal delete — Figma 70:8 (chores) and 76:67 (members).
+ *
+ * The row translates LEFT and the red control is revealed to its right. The
+ * track clips the row's leading edge during the reveal — that clipping is
+ * intentional HERE and only here; at rest the row and its shadow are fully
+ * visible, which is why the track is padded rather than tight.
+ */
+
+.track {
+  /* Room for the 4px hard shadow on all sides, pulled back onto the gutter. */
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md)
+    var(--spacing-xs);
+  margin: calc(var(--spacing-xs) * -1) calc(var(--spacing-md) * -1)
+    calc(var(--spacing-md) * -1) calc(var(--spacing-xs) * -1);
+  overflow: hidden;
+}
+
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  width: 100%;
+  transition: transform 180ms ease-out;
+  /* Let vertical scrolling through, but claim horizontal drags for the swipe. */
+  touch-action: pan-y;
+}
+
+.slider {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* Sits just outside the row, revealed as the row slides left. */
+.delete {
+  flex: 0 0 var(--layout-tap-target);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap {
+    transition: none;
+  }
+}

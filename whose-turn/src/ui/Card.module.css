@@ -1,0 +1,89 @@
+/* Card + ChoreRow. Geometry from Figma nodes 65:26 (default) and 130:166
+   (selected). Both share the 24px radius and the large hard shadow. */
+
+.card {
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  min-height: 56px;
+  padding-block: var(--spacing-lg);
+  padding-inline: var(--spacing-3xl) var(--spacing-2xl);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+  color: var(--color-text-heading);
+  text-align: left;
+  transition:
+    transform 60ms ease-out,
+    box-shadow 60ms ease-out;
+}
+
+/* Selected chore. GREEN, not the yellow the style skill describes — this is a
+   standing override, confirmed on frame 2:141. Border thickens 2px -> 3px. */
+.rowSelected {
+  background: var(--color-accent-success);
+  border-width: var(--border-lg);
+}
+
+/* Rows with an avatar sit tighter on the left — nodes 61:68, 157:62. */
+.rowLeading {
+  gap: var(--spacing-inline);
+  padding-inline: var(--spacing-inline) var(--spacing-2xl);
+}
+
+/* Long names truncate with an ellipsis at the END, as the frames show — never
+   by being clipped at the start. */
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--color-text-heading);
+}
+
+/* Interactive rows only. */
+button.row {
+  cursor: pointer;
+}
+
+button.row:active {
+  transform: translate(var(--shadow-offset-lg), var(--shadow-offset-lg));
+  box-shadow: none;
+}
+
+/* No focus styling by design — a selected row looks the same focused or not.
+   Selection is still signalled by fill + check icon and aria-pressed. */
+
+/* Disabled fades the FILL and TEXT only.
+   Element-level `opacity` would composite the hard shadow along with
+   everything else, turning the solid #332014 offset into washed-out grey —
+   there is no soft or grey shadow anywhere in this design, in any state. So
+   the shadow and the outline stay at full strength and the surface colours
+   are mixed toward the canvas instead. */
+button.row:disabled {
+  cursor: not-allowed;
+  background: color-mix(
+    in srgb,
+    var(--color-background-surface) 50%,
+    var(--color-background-primary)
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-text-heading) 45%,
+    var(--color-background-primary)
+  );
+}

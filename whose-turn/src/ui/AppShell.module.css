@@ -1,0 +1,63 @@
+/* Phone-width column.
+ *
+ * Figma is drawn at 390x844, but that is a REFERENCE, not a canvas: the layout
+ * is fluid. Side gutters stay 16px at every width and content stretches to fill
+ * what is left. Above 390 the column stays centred rather than stretching.
+ *
+ * Height uses 100dvh with a 100vh fallback — 100vh alone is wrong in iOS Safari
+ * while the browser chrome is visible and pushes content under the toolbar.
+ *
+ * There is no fake status bar or home indicator. The space they used to take is
+ * the real safe-area inset, which is 0 on a desktop browser and non-zero on a
+ * notched device. Figma's y coordinates were measured from the top of a frame
+ * that INCLUDED the 44px status bar, so screen offsets are rebased against the
+ * safe-area top rather than copied straight across.
+ */
+
+.shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--layout-canvas-width);
+  min-height: 100vh; /* fallback for browsers without dvh */
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding-inline: var(--layout-gutter);
+  padding-block-start: env(safe-area-inset-top, 0px);
+  padding-block-end: calc(
+    var(--spacing-4xl) + env(safe-area-inset-bottom, 0px)
+  );
+  background: var(--color-background-primary);
+}
+
+/* Edge-to-edge variant, for screens that lay themselves out against the full
+   390x844 reference (login). */
+.bleed {
+  padding-inline: 0;
+  padding-block: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* NOT `height` + `overflow: hidden`: on a viewport shorter than the frame's
+     aspect ratio that silently cut the dice off below the fold. The composition
+     keeps its proportions and the page scrolls instead, so nothing is lost. */
+  overflow-x: clip;
+}
+
+.bleed > main {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+/* Main content fills the space between the header and the bottom action area.
+   min-height: 0 lets an inner scroll region actually shrink instead of forcing
+   the whole page to grow — without it the list cannot scroll on its own. */
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  min-height: 0;
+}

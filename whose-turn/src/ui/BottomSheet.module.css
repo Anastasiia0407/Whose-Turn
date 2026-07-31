@@ -1,0 +1,104 @@
+/* Bottom sheet. Geometry from Figma nodes 64:6 (new-chore), 65:44 (members)
+   and 130:183 (fate-mode). All three share the same shell. */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: var(--color-scrim);
+}
+
+/* The sheet never exceeds the viewport, and its own body scrolls rather than
+   the page behind it — so on a short screen the CTA can never be pushed
+   off-screen. Bottom padding clears the home indicator on notched devices. */
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  max-width: var(--layout-canvas-width);
+  max-height: 90vh;
+  max-height: 90dvh;
+  padding-block: var(--spacing-sheet-top)
+    calc(var(--spacing-4xl) + env(safe-area-inset-bottom, 0px));
+  padding-inline: var(--layout-gutter);
+  background: var(--color-background-primary);
+  border-top: var(--border-lg) solid var(--color-border-default);
+  border-left: var(--border-lg) solid var(--color-border-default);
+  border-right: var(--border-lg) solid var(--color-border-default);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  /* The sheet itself never scrolls — its body does, so the header and close
+     button stay reachable. */
+  overflow: hidden;
+  animation: slide-up 220ms ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Grab handle — node 76:54, sitting above the sheet's top padding and
+   overlapping the border. This IS part of the sheet design (it appears in every
+   sheet frame), unlike the phone's home-indicator line, which was mockup
+   decoration and has been removed. */
+.handle {
+  position: absolute;
+  top: calc(var(--border-lg) * -1);
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  padding-block: var(--spacing-inline) var(--spacing-md);
+}
+
+.handleBar {
+  width: 134px;
+  height: 5px;
+  background: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding-inline-start: var(--spacing-inline);
+}
+
+.title {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-sheet-title-size);
+  line-height: 1.2;
+  color: var(--color-text-heading);
+}
+
+/* Two-tone sheet titles, e.g. "Select Fate-Mode" (node 130:185). */
+.titleAccent {
+  color: var(--color-accent-primary);
+}
+
+/* The body does NOT scroll as a whole — that would carry the CTA off-screen on
+   a short viewport. It shrinks instead, and whichever child is the long one
+   (the member list) owns the scrolling, so the CTA stays pinned and visible. */
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+  min-height: 0;
+}

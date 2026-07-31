@@ -1,0 +1,328 @@
+/* Login — Figma frame 179:44.
+ *
+ * That frame is FLATTENED in Figma: it has no child layer tree, so MCP returns
+ * no geometry for it. Every position below comes from measurements taken off
+ * the native 390x844 render, and is expressed in `cqw` (percent of the shell's
+ * width) so the whole composition scales proportionally on other widths.
+ *
+ *   value_in_cqw = px_at_390 / 390 * 100
+ */
+
+.canvas {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  /* Keeps vertical positions proportional to width, matching the reference. */
+  aspect-ratio: 390 / 844;
+  min-height: 100vh; /* fallback for browsers without dvh */
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+/* -- Decorative illustrations (aria-hidden, non-interactive) ------------- */
+
+.wheel {
+  position: absolute;
+  /* 164x164 at (8, 58) */
+  left: 2.0513cqw;
+  top: 14.8718cqw;
+  width: 42.0513cqw;
+  height: 42.0513cqw;
+  pointer-events: none;
+}
+
+.wheel svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Node 179:195 — a COIN. 80x80 at (265, 161). */
+.coin {
+  position: absolute;
+  left: 67.9487cqw;
+  top: 41.2821cqw;
+  width: 20.5128cqw;
+  height: 20.5128cqw;
+  border: 0.3462cqw solid var(--color-border-default);
+  border-radius: 50%;
+  box-shadow: 0.4615cqw 0.4615cqw 0 var(--color-border-default);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dice {
+  position: absolute;
+  /* ~185 wide, centred, top 695 */
+  left: 50%;
+  transform: translateX(-50%);
+  top: 178.2051cqw;
+  width: 47.4359cqw;
+  pointer-events: none;
+}
+
+.dice svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Pair geometry preserved from the exported dice group (259x197 box). The two
+   dice are absolutely placed INSIDE this box — the wrapper itself stays in
+   flow so the aspect-ratio actually resolves. */
+.diceInner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 259 / 197;
+}
+
+.diceInner > * {
+  position: absolute;
+}
+
+.diceAmber {
+  left: 48.41%;
+  top: 23.81%;
+  width: 34.04%;
+  height: 47.68%;
+}
+
+.diceTerracotta {
+  left: 14.27%;
+  top: 37.45%;
+  width: 34.03%;
+  height: 48.22%;
+}
+
+/* -- Content ------------------------------------------------------------ */
+
+.headline {
+  position: absolute;
+  top: 70.5128cqw;
+  left: 0;
+  width: 100%;
+  /* ~44px at 390. Scales with width so it can never wrap to two lines. */
+  font-family: var(--type-h1-family);
+  font-weight: var(--type-h1-weight);
+  font-size: 11.2821cqw;
+  line-height: 1.15;
+  color: var(--color-text-heading);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.headlineAccent {
+  color: var(--color-accent-primary);
+}
+
+.subtitle {
+  position: absolute;
+  top: 87.9487cqw;
+  left: 0;
+  width: 100%;
+  padding-inline: var(--layout-gutter);
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.form {
+  position: absolute;
+  top: 109.7436cqw;
+  left: 0;
+  width: 100%;
+  padding-inline: var(--layout-gutter);
+}
+
+/* EMAIL label sits at x=20 — 4px inside the 16px gutter. */
+.label {
+  padding-inline-start: 4px;
+}
+
+/* 8px between the EMAIL label and the field. The hard shadow sits outside the
+   box and is not part of the gap, so nothing is compensated for it. */
+.field {
+  margin-top: var(--spacing-md);
+}
+
+/* The field is 52 tall here, shorter than the shared 56px control, so the
+   inherited vertical padding is replaced by an explicit height. */
+.field input {
+  min-height: 0;
+  height: 13.3333cqw; /* 52px at 390 */
+  padding-block: 0;
+}
+
+/* 16px between the field and the Get Started button. */
+.submit {
+  margin-top: var(--spacing-xl);
+}
+
+.submit button {
+  min-height: 13.8462cqw; /* 54px at 390 */
+  padding-block: 0;
+}
+
+.error {
+  margin-top: var(--spacing-md);
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-accent-danger);
+  text-align: center;
+}
+
+/* ==========================================================================
+   LOGIN MOTION — Figma frame 179:44.
+
+   THREE SEQUENTIAL ACTS, not one simultaneous timeline:
+     act 1  wheel spins and comes to a full stop   0 - 2000ms
+     beat                                          2000 - 2300ms
+     act 2  both dice are thrown and settle        2300 - 4300ms
+     beat                                          4300 - 4600ms
+     act 3  coin jumps, flips and lands            4600 - 6600ms
+     beat                                          6600 - 6900ms
+   Whole loop: 6900ms.
+
+   Every element animates across the FULL loop but only moves inside its own
+   act; outside it, its keyframes hold the settled pose, so nothing is ever
+   caught mid-spin, mid-air or mid-flip while another act plays.
+
+   THE EXPORTED TIMING IS CORRUPT — every track crams its keyframes into
+   `times` 0.9993-1.0 and the coin's background track runs past 1.0 (to 3.5).
+   The exported MP4 inherits it: only the wheel visibly moves. So the VALUE
+   SEQUENCES are the choreography and the schedule is set here by hand.
+
+   Only transform and opacity animate, so the loop stays on the compositor.
+   ========================================================================== */
+
+/* Act 1 — WheelWrap (179:148): exactly +1080deg (three revolutions), easing
+   out to a full stop, then holding. 1096.191 is the same angle as the 16.191
+   start, so the wrap point is invisible. */
+@keyframes login-wheel {
+  0% {
+    transform: rotate(16.191deg);
+    animation-timing-function: cubic-bezier(0.16, 0.72, 0.14, 1);
+  }
+  28.986%, 100% { transform: rotate(1096.191deg); }
+}
+
+/* Act 2 — dice 3 (179:103): anticipation, throw, two decaying bounces. */
+@keyframes login-die-a {
+  0%, 33.333% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
+  35.072% { transform: translate(2px, 5px) rotate(14deg) scale(0.92, 1.1); }
+  43.768% { transform: translate(25px, -130px) rotate(200deg) scale(1, 1); }
+  49.565% { transform: translate(20px, 0) rotate(340deg) scale(1.15, 0.82); }
+  53.623% { transform: translate(18px, -25px) rotate(352deg) scale(1, 1); }
+  57.101% { transform: translate(16px, 0) rotate(357deg) scale(1.05, 0.93); }
+  59.71% { transform: translate(15px, -6px) rotate(359deg) scale(1, 1); }
+  62.319%, 100% { transform: translate(0, 0) rotate(360deg) scale(1, 1); }
+}
+
+/* Act 2 — dice 4 (179:143): the mirrored second die, thrown higher. */
+@keyframes login-die-b {
+  0%, 33.333% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
+  35.072% { transform: translate(-2px, 4px) rotate(-12deg) scale(0.9, 1.12); }
+  43.768% { transform: translate(-20px, -150px) rotate(-180deg) scale(1, 1); }
+  49.565% { transform: translate(-16px, 0) rotate(-310deg) scale(1.12, 0.84); }
+  53.623% { transform: translate(-14px, -30px) rotate(-328deg) scale(1, 1); }
+  57.101% { transform: translate(-12px, 0) rotate(-338deg) scale(1.04, 0.94); }
+  59.71% { transform: translate(-10px, -8px) rotate(-352deg) scale(1, 1); }
+  62.319%, 100% { transform: translate(0, 0) rotate(-360deg) scale(1, 1); }
+}
+
+/* Act 3 — coin (179:195): jumps and flips six times on the way. */
+@keyframes login-coin {
+  0%, 66.667% { transform: translateY(0) scaleY(1); }
+  68.696% { transform: translateY(-40px) scaleY(0); }
+  70.725% { transform: translateY(-72px) scaleY(1); }
+  73.043% { transform: translateY(-95px) scaleY(0); }
+  75.362% { transform: translateY(-100px) scaleY(1); }
+  78.261% { transform: translateY(-88px) scaleY(0); }
+  81.159% { transform: translateY(-60px) scaleY(1); }
+  84.058% { transform: translateY(-24px) scaleY(0); }
+  86.957% { transform: translateY(0px) scaleY(1); }
+  89.855% { transform: translateY(-12px) scaleY(0); }
+  92.174% { transform: translateY(-6px) scaleY(1); }
+  93.913% { transform: translateY(-2px) scaleY(0); }
+  95.652%, 100% { transform: translateY(0) scaleY(1); }
+}
+
+/* Face swap rides each scaleY zero-crossing. Opacity is compositor-level, so
+   the faces cross-cut without repainting. Six swaps returns to the start face,
+   keeping the loop seamless. */
+@keyframes login-coin-face-a {
+  0%, 66.667% { opacity: 1; }
+  68.696% { opacity: 0; }
+  73.043% { opacity: 1; }
+  78.261% { opacity: 0; }
+  84.058% { opacity: 1; }
+  89.855% { opacity: 0; }
+  93.913% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes login-coin-face-b {
+  0%, 66.667% { opacity: 0; }
+  68.696% { opacity: 1; }
+  73.043% { opacity: 0; }
+  78.261% { opacity: 1; }
+  84.058% { opacity: 0; }
+  89.855% { opacity: 1; }
+  93.913% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.wheel svg {
+  animation: login-wheel 6900ms linear infinite;
+  will-change: transform;
+}
+
+.diceAmber {
+  animation: login-die-a 6900ms cubic-bezier(0.4, 0, 0.5, 1) infinite;
+  will-change: transform;
+}
+
+.diceTerracotta {
+  animation: login-die-b 6900ms cubic-bezier(0.4, 0, 0.5, 1) infinite;
+  will-change: transform;
+}
+
+.coin {
+  animation: login-coin 6900ms cubic-bezier(0.4, 0, 0.5, 1) infinite;
+  will-change: transform;
+}
+
+.coinFace {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.coinFaceA {
+  background: var(--color-accent-primary);
+  animation: login-coin-face-a 6900ms steps(1, end) infinite;
+}
+
+/* Face B — the frame's second coin face. A decorative illustration colour from
+   node 179:195, not a product token. */
+.coinFaceB {
+  background: #33b24d;
+  animation: login-coin-face-b 6900ms steps(1, end) infinite;
+}
+
+/* Decorative motion only — freeze all four at a settled composition. */
+@media (prefers-reduced-motion: reduce) {
+  .wheel svg,
+  .diceAmber,
+  .diceTerracotta,
+  .coin,
+  .coinFaceA,
+  .coinFaceB {
+    animation: none;
+  }
+  .coinFaceB { opacity: 0; }
+  .wheel svg { transform: rotate(16.191deg); }
+}

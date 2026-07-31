@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Turn? — prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff6ec;--card:#ffffff;--ink:#241c2b;--muted:#8a8194;
+    --accent:#ff5a3c;--accent2:#7b5cff;--gold:#ffc245;--green:#2fbf71;
+    --shadow:0 18px 40px rgba(60,30,80,.12);--radius:28px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Rubik',system-ui,sans-serif;
+    background:radial-gradient(120% 90% at 50% -10%,#ffe9d3 0%,var(--bg) 55%);
+    color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .phone{width:100%;max-width:390px;height:min(820px,94vh);background:var(--bg);border-radius:44px;
+    box-shadow:var(--shadow),0 0 0 10px #1f1726,0 0 0 12px #2c2333;
+    overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:26px 22px 22px;
+    opacity:0;pointer-events:none;transform:translateX(16px);transition:opacity .35s,transform .35s;overflow-y:auto}
+  .screen.active{opacity:1;pointer-events:auto;transform:none}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .home-title{font-size:26px;font-weight:800;letter-spacing:-.5px}
+  .home-title span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:14px;margin-top:2px}
+  .section-label{font-size:13px;color:var(--muted);font-weight:600;margin:6px 4px 12px;
+    text-transform:uppercase;letter-spacing:.6px}
+  .chore{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;
+    padding:14px 16px;margin-bottom:12px;cursor:pointer;box-shadow:0 8px 20px rgba(70,40,90,.06);
+    transition:transform .15s,box-shadow .15s;border:2px solid transparent}
+  .chore:active{transform:scale(.98)}
+  .chore.sel{border-color:var(--accent);box-shadow:0 10px 26px rgba(255,90,60,.22)}
+  .chore .emoji{width:46px;height:46px;border-radius:14px;background:#fff2e6;
+    display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+  .chore .cname{font-weight:600;font-size:16px}
+  .chore .cwho{font-size:13px;color:var(--muted);margin-top:2px}
+  .chore .pick{margin-left:auto;color:var(--muted);font-size:20px}
+  .rm-chore{margin-left:auto;color:var(--accent);background:#fff0ec;border:none;font-size:18px;
+    cursor:pointer;width:34px;height:34px;border-radius:10px}
+  .edit-link{background:none;border:none;color:var(--accent2);font-weight:600;font-size:13px;
+    cursor:pointer;font-family:inherit;text-transform:none;letter-spacing:0}
+  .addchore{border:2px dashed #dbc9ea;border-radius:22px;padding:16px;text-align:center;
+    color:var(--accent2);font-weight:600;cursor:pointer;margin-bottom:12px}
+  .addchore:active{background:#f3ecfa}
+  .emoji-palette{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .emoji-palette .ep{aspect-ratio:1;border-radius:14px;background:#fff;border:2px solid transparent;
+    font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .emoji-palette .ep.sel{border-color:var(--accent);background:#fff2e6}
+  .spin-cta{margin-top:auto;padding-top:14px;position:sticky;bottom:0}
+  .btn{border:none;border-radius:100px;font-family:inherit;font-weight:700;cursor:pointer;
+    transition:transform .12s,filter .2s;width:100%}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#ff7a2e);color:#fff;padding:18px;
+    font-size:18px;box-shadow:0 14px 30px rgba(255,90,60,.4)}
+  .btn-primary .hint{display:block;font-weight:500;font-size:12px;opacity:.9;margin-top:2px}
+  .btn-soft{background:#efe7f6;color:var(--accent2);padding:15px;font-size:15px}
+  .iconbtn{width:42px;height:42px;border-radius:14px;background:#fff;border:none;display:flex;
+    align-items:center;justify-content:center;font-size:20px;cursor:pointer;
+    box-shadow:0 6px 16px rgba(70,40,90,.08);color:var(--ink)}
+  /* SPIN */
+  #spin{align-items:center;text-align:center;justify-content:flex-start}
+  .spin-head{font-size:22px;font-weight:800;margin-top:6px}
+  .spin-chore{color:var(--accent);font-weight:800}
+  .spin-sub{color:var(--muted);font-size:14px;margin:6px 0 20px}
+  .wheel-wrap{position:relative;width:290px;height:290px;margin:6px auto 8px}
+  .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;
+    border-left:16px solid transparent;border-right:16px solid transparent;
+    border-top:26px solid var(--ink);z-index:5;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+  .wheel{width:100%;height:100%;border-radius:50%;position:relative;
+    box-shadow:0 16px 40px rgba(60,30,80,.28),inset 0 0 0 8px #fff;
+    transition:transform 4.4s cubic-bezier(.15,.9,.25,1)}
+  .wheel .lbl{position:absolute;top:50%;left:50%;transform-origin:0 0;font-weight:700;color:#fff;
+    font-size:12px;text-shadow:0 1px 3px rgba(0,0,0,.3);white-space:nowrap}
+  .hub{position:absolute;top:50%;left:50%;width:56px;height:56px;transform:translate(-50%,-50%);
+    background:#fff;border-radius:50%;z-index:4;display:flex;align-items:center;justify-content:center;
+    font-size:26px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+  .spin-status{height:24px;color:var(--muted);font-size:15px;font-weight:500;margin:10px 0 4px}
+  /* RESULT */
+  #result{align-items:center;text-align:center;justify-content:center;gap:6px}
+  .result-emoji{font-size:70px;margin-bottom:6px;animation:pop .5s ease}
+  @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .result-fate{color:var(--muted);font-size:15px;font-weight:600;letter-spacing:.5px}
+  .result-name{font-size:40px;font-weight:800;margin:2px 0}
+  .result-chore{color:var(--accent2);font-weight:600;font-size:16px;margin-bottom:26px}
+  .result-actions{width:100%;display:flex;flex-direction:column;gap:12px}
+  .result-note{color:var(--muted);font-size:13px;font-weight:500;margin-top:2px}
+  #confetti{position:absolute;inset:0;pointer-events:none;z-index:9}
+  /* SHEETS */
+  .sheet{position:absolute;inset:0;background:rgba(30,20,40,.4);z-index:20;opacity:0;
+    pointer-events:none;transition:opacity .3s;display:flex;align-items:flex-end}
+  .sheet.open{opacity:1;pointer-events:auto}
+  .sheet-card{background:var(--bg);width:100%;border-radius:32px 32px 0 0;padding:24px 22px 26px;
+    transform:translateY(100%);transition:transform .3s}
+  .sheet.open .sheet-card{transform:none}
+  .sheet-title{font-size:20px;font-weight:800;margin-bottom:16px}
+  .member-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;
+    padding:10px 12px;margin-bottom:10px}
+  .member-row .a{width:36px;height:36px;border-radius:50%;color:#fff;font-weight:700;display:flex;
+    align-items:center;justify-content:center;font-size:15px}
+  .member-row .mname{font-weight:600}
+  .member-row .rm{margin-left:auto;color:var(--muted);cursor:pointer;font-size:22px;background:none;border:none}
+  .addrow{display:flex;gap:10px;margin-top:6px}
+  .addrow input{flex:1;border:none;background:#fff;border-radius:16px;padding:14px;
+    font-family:inherit;font-size:15px;outline:2px solid transparent}
+  .addrow input:focus{outline-color:var(--accent)}
+  .addrow button{border:none;background:var(--accent);color:#fff;border-radius:16px;padding:0 20px;
+    font-weight:700;font-size:22px;cursor:pointer}
+  .close-x{float:right;font-size:24px;color:var(--muted);background:none;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- HOME -->
+  <section class="screen active" id="home">
+    <div class="top">
+      <div>
+        <div class="home-title">Whose <span>Turn?</span></div>
+        <div class="sub">Your home · 4 members</div>
+      </div>
+      <button class="iconbtn" onclick="openSheet()">👥</button>
+    </div>
+    <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Pick the disputed chore</span>
+      <button class="edit-link" id="editLink" onclick="toggleEdit()">Edit</button>
+    </div>
+    <div id="choreList"></div>
+    <div class="addchore" onclick="openChoreSheet()">＋ Add a new chore</div>
+    <div class="spin-cta">
+      <button class="btn btn-primary" onclick="goSpin()">
+        Let fate decide 🎡
+        <span class="hint" id="spinHint">pick a chore above first</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- SPIN -->
+  <section class="screen" id="spin">
+    <div class="top" style="width:100%">
+      <button class="iconbtn" onclick="show('home')">←</button>
+      <div style="flex:1"></div>
+    </div>
+    <div class="spin-head">Who <span class="spin-chore" id="spinChoreName">does the dishes</span> today?</div>
+    <div class="spin-sub">Wherever the wheel stops — that's fate</div>
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+      <div class="hub">🎡</div>
+    </div>
+    <div class="spin-status" id="spinStatus">Ready to tempt fate?</div>
+    <button class="btn btn-primary" id="spinBtn" style="max-width:230px" onclick="doSpin()">Spin the wheel</button>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="result">
+    <div class="result-emoji" id="resEmoji">🎉</div>
+    <div class="result-fate">FATE HAS CHOSEN</div>
+    <div class="result-name" id="resName">Anna</div>
+    <div class="result-chore" id="resChore">does the dishes today</div>
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="accept()">I accept my fate</button>
+      <div class="result-note">You can't re-spin fate — that's fair 🤝</div>
+    </div>
+  </section>
+
+  <!-- MEMBERS SHEET -->
+  <div class="sheet" id="sheet">
+    <div class="sheet-card">
+      <button class="close-x" onclick="closeSheet()">✕</button>
+      <div class="sheet-title">Members</div>
+      <div id="memberList"></div>
+      <div class="addrow">
+        <input id="newMember" placeholder="New member's name" maxlength="12"
+          onkeydown="if(event.key==='Enter')addMember()">
+        <button onclick="addMember()">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHORE SHEET -->
+  <div class="sheet" id="choreSheet">
+    <div class="sheet-card">
+      <button class="close-x" onclick="closeChoreSheet()">✕</button>
+      <div class="sheet-title">New chore</div>
+      <div class="section-label" style="margin:0 0 10px">Pick an icon</div>
+      <div class="emoji-palette" id="emojiPalette"></div>
+      <div class="addrow" style="margin-top:16px">
+        <input id="newChore" placeholder="Chore name (e.g. Wash the windows)" maxlength="24"
+          onkeydown="if(event.key==='Enter')addChore()">
+        <button onclick="addChore()">+</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+</div>
+
+<script>
+const COLORS = ['#ff5a3c','#7b5cff','#2fbf71','#ffc245','#ff8fab','#3ec5ff','#ff7a2e','#9b5de5'];
+let members = [{name:'Anna'},{name:'Max'},{name:'Sofia'},{name:'Dad'}];
+let chores = [
+  {emoji:'🍽️', name:'Wash the dishes', verb:'does the dishes'},
+  {emoji:'🍳', name:'Cook dinner', verb:'cooks dinner'},
+  {emoji:'🗑️', name:'Take out the trash', verb:'takes out the trash'},
+  {emoji:'🧹', name:'Sweep the floor', verb:'sweeps the floor'},
+  {emoji:'🛒', name:'Go shopping', verb:'does the shopping'},
+  {emoji:'🐱', name:'Feed the cat', verb:'feeds the cat'},
+];
+let selectedChore = null;
+let editMode = false;
+const CHORE_EMOJIS = ['🍽️','🍳','🗑️','🧹','🛒','🐱','🧺','🚿','🛏️','🪴','🧼','🐕','👶','🚗','🧽','☕','🪟','🌳'];
+let pickedEmoji = CHORE_EMOJIS[0];
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ---------- home ---------- */
+function renderChores(){
+  const list=document.getElementById('choreList');
+  list.innerHTML='';
+  chores.forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='chore'+(selectedChore===i&&!editMode?' sel':'');
+    el.onclick=()=>{ if(editMode)return; selectedChore=i;renderChores();updateHint(); };
+    const right = editMode
+      ? (chores.length>1 ? `<button class="rm-chore" onclick="removeChore(event,${i})">✕</button>` : '')
+      : `<div class="pick">${selectedChore===i?'✅':'›'}</div>`;
+    el.innerHTML=`<div class="emoji">${c.emoji}</div>
+      <div><div class="cname">${c.name}</div>
+      <div class="cwho">nobody wants it? let fate decide</div></div>${right}`;
+    list.appendChild(el);
+  });
+}
+function updateHint(){
+  const h=document.getElementById('spinHint');
+  h.textContent = selectedChore===null ? 'pick a chore above first' : '«'+chores[selectedChore].name+'»';
+}
+function toggleEdit(){
+  editMode=!editMode;
+  if(editMode)selectedChore=null;
+  document.getElementById('editLink').textContent=editMode?'Done':'Edit';
+  renderChores();updateHint();
+}
+function removeChore(e,i){
+  e.stopPropagation();
+  if(chores.length<=1)return;
+  chores.splice(i,1);selectedChore=null;renderChores();updateHint();
+}
+
+/* ---------- chore sheet ---------- */
+function openChoreSheet(){
+  pickedEmoji=CHORE_EMOJIS[0];renderPalette();
+  document.getElementById('newChore').value='';
+  document.getElementById('choreSheet').classList.add('open');
+}
+function closeChoreSheet(){document.getElementById('choreSheet').classList.remove('open');}
+function renderPalette(){
+  const p=document.getElementById('emojiPalette');p.innerHTML='';
+  CHORE_EMOJIS.forEach(e=>{
+    const d=document.createElement('div');
+    d.className='ep'+(e===pickedEmoji?' sel':'');
+    d.textContent=e;d.onclick=()=>{pickedEmoji=e;renderPalette();};
+    p.appendChild(d);
+  });
+}
+function addChore(){
+  const inp=document.getElementById('newChore');const v=inp.value.trim();
+  if(!v)return;
+  chores.push({emoji:pickedEmoji,name:v,verb:'does «'+v+'»'});
+  closeChoreSheet();renderChores();
+}
+
+/* ---------- spin ---------- */
+let currentRotation = 0;
+function goSpin(){
+  if(selectedChore===null){ selectedChore=0; renderChores(); updateHint(); }
+  document.getElementById('spinChoreName').textContent = chores[selectedChore].verb;
+  buildWheel();
+  document.getElementById('spinStatus').textContent='Ready to tempt fate?';
+  const b=document.getElementById('spinBtn'); b.textContent='Spin the wheel'; b.disabled=false;
+  show('spin');
+}
+function buildWheel(){
+  const wheel=document.getElementById('wheel');
+  const base=members.length;
+  const repeat=Math.max(1,Math.round(12/base));
+  const N=base*repeat;                 // ~12 sectors, members alternate around
+  const seg=360/N;
+  let stops=[];
+  for(let i=0;i<N;i++){
+    const c=COLORS[i%base];
+    stops.push(`${c} ${i*seg}deg ${(i+1)*seg}deg`);
+  }
+  wheel.style.background=`conic-gradient(${stops.join(',')})`;
+  wheel.style.transition='none';
+  wheel.style.transform='rotate(0deg)';
+  currentRotation=0;
+  wheel.innerHTML='';
+  const rLabel=92;
+  for(let i=0;i<N;i++){
+    const m=members[i%base];
+    const a=i*seg+seg/2;               // center angle, clockwise from top
+    const lbl=document.createElement('div');
+    lbl.className='lbl';
+    lbl.textContent=m.name;
+    const flip=(a>90&&a<270)?180:0;    // keep left-side labels upright
+    lbl.style.transform=`rotate(${a}deg) translate(0,-${rLabel}px) rotate(${flip}deg)`;
+    wheel.appendChild(lbl);
+  }
+  wheel._N=N; wheel._base=base; wheel._seg=seg;
+  void wheel.offsetWidth;
+}
+function doSpin(){
+  const b=document.getElementById('spinBtn'); b.disabled=true;
+  document.getElementById('spinStatus').textContent='Drumroll… 🥁';
+  const wheel=document.getElementById('wheel');
+  const N=wheel._N, seg=wheel._seg, base=wheel._base;
+  const sector=Math.floor(Math.random()*N);
+  const winner=sector%base;
+  const jitter=(Math.random()-0.5)*seg*0.5;
+  const spins=5+Math.floor(Math.random()*2);
+  const target=360*spins-(sector*seg+seg/2)+jitter;
+  wheel.style.transition='transform 4.4s cubic-bezier(.15,.9,.25,1)';
+  wheel.style.transform=`rotate(${target}deg)`;
+  currentRotation=target;
+  setTimeout(()=>showResult(winner),4500);
+}
+
+/* ---------- result ---------- */
+const EMO=['🎉','🎊','✨','🥳','🙌'];
+function showResult(winner){
+  const m=members[winner], c=chores[selectedChore];
+  document.getElementById('resEmoji').textContent=EMO[Math.floor(Math.random()*EMO.length)];
+  document.getElementById('resName').textContent=m.name;
+  document.getElementById('resName').style.color=COLORS[winner%COLORS.length];
+  document.getElementById('resChore').textContent=c.verb+' today';
+  show('result');
+  fireConfetti();
+}
+function accept(){ selectedChore=null; renderChores(); updateHint(); show('home'); }
+
+/* ---------- confetti ---------- */
+const cv=document.getElementById('confetti');
+const ctx=cv.getContext('2d');
+function sizeCanvas(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;}
+let parts=[];
+function fireConfetti(){
+  sizeCanvas();parts=[];
+  for(let i=0;i<130;i++){
+    parts.push({x:cv.width/2,y:cv.height*0.35,vx:(Math.random()-0.5)*11,vy:Math.random()*-13-3,
+      g:0.28+Math.random()*0.12,s:5+Math.random()*7,rot:Math.random()*6,vr:(Math.random()-0.5)*0.4,
+      c:COLORS[i%COLORS.length]});
+  }
+  requestAnimationFrame(tick);
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  let alive=false;
+  parts.forEach(p=>{
+    p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
+    if(p.y<cv.height+20){alive=true;}
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);ctx.restore();
+  });
+  if(alive)requestAnimationFrame(tick);
+  else ctx.clearRect(0,0,cv.width,cv.height);
+}
+
+/* ---------- members sheet ---------- */
+function openSheet(){renderMembers();document.getElementById('sheet').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');}
+function renderMembers(){
+  const list=document.getElementById('memberList');list.innerHTML='';
+  members.forEach((m,i)=>{
+    const row=document.createElement('div');row.className='member-row';
+    row.innerHTML=`<div class="a" style="background:${COLORS[i%COLORS.length]}">${m.name[0]}</div>
+      <div class="mname">${m.name}</div>
+      ${members.length>2?`<button class="rm" onclick="removeMember(${i})">✕</button>`:''}`;
+    list.appendChild(row);
+  });
+}
+function addMember(){
+  const inp=document.getElementById('newMember');const v=inp.value.trim();
+  if(!v)return;
+  members.push({name:v});inp.value='';renderMembers();
+}
+function removeMember(i){
+  if(members.length<=2)return;
+  members.splice(i,1);renderMembers();
+}
+
+/* ---------- init ---------- */
+renderChores();updateHint();
+window.addEventListener('resize',sizeCanvas);
+</script>
+</body>
+</html>

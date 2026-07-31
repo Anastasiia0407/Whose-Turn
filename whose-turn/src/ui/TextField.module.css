@@ -1,0 +1,64 @@
+/* Outlined input. Geometry from Figma nodes 181:203 (auth) and 61:52 (sheets).
+   Fill is the cream canvas, not white — confirmed on both. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  min-height: 56px;
+  padding-block: var(--spacing-xl);
+  padding-inline: var(--spacing-3xl) var(--spacing-2xl);
+  background: var(--color-background-primary);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+  color: var(--color-text-heading);
+}
+
+/* Figma shows placeholder copy at 50% opacity (nodes 61:53, 181:204). */
+.input::placeholder {
+  color: var(--color-text-heading);
+  opacity: 0.5;
+}
+
+/* No focus styling by design — the field is identical at rest and when focused. */
+
+/* Disabled fades the FILL and TEXT only.
+   Element-level `opacity` would composite the hard shadow along with
+   everything else, turning the solid #332014 offset into washed-out grey —
+   there is no soft or grey shadow anywhere in this design, in any state. So
+   the shadow and the outline stay at full strength and the surface colours
+   are mixed toward the canvas instead. */
+.input:disabled {
+  cursor: not-allowed;
+  color: color-mix(
+    in srgb,
+    var(--color-text-heading) 45%,
+    var(--color-background-primary)
+  );
+}
+
+.error {
+  border-color: var(--color-accent-danger);
+}
+
+.message {
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}
+
+.messageError {
+  color: var(--color-accent-danger);
+}

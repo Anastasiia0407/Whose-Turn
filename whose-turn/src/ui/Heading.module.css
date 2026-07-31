@@ -1,0 +1,35 @@
+/* Two-tone Corben headline. Every heading in the product splits into a
+   terracotta phrase and a dark phrase — nodes 82:22, 83:30, 179:56. */
+
+.heading {
+  font-family: var(--type-h1-family);
+  font-weight: var(--type-h1-weight);
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  color: var(--color-text-heading);
+}
+
+/* Login sets the title larger with a tighter leading — node 179:56. */
+.display {
+  font-size: 40px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.accent {
+  color: var(--color-accent-primary);
+}
+
+.subtitle {
+  font-family: var(--type-body-family);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+}
+
+/* Login subtitle is 18px — node 179:57. */
+.subtitleDisplay {
+  font-size: 18px;
+  text-align: center;
+}
