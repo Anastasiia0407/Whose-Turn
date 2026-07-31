@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { drawWinner } from './engine'
+import { preload } from '../audio/player'
 import type { Member } from '../data'
 
 export type DrawPhase = 'idle' | 'running' | 'done'
@@ -33,6 +34,10 @@ export function useDraw(members: Member[]) {
       if (running.current || members.length === 0) return
       running.current = true
       setPhase('running')
+
+      // Warmed HERE, not on the result screen — by then it is too late for the
+      // fetch to finish before the sting is supposed to fire.
+      preload('winner')
 
       // Decided FIRST. Everything after this point is presentation.
       const picked = drawWinner(members)

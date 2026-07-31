@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FateLayout } from './FateLayout'
 import { useDraw } from './useDraw'
 import { solveCoin } from './engine'
+import { play, preload, stop } from '../audio/player'
 import type { Chore, Member } from '../data'
 import styles from './CoinScreen.module.css'
 
@@ -25,6 +26,11 @@ export function CoinScreen({ chore, members, onSettled }: Props) {
   const [flipping, setFlipping] = useState(false)
   const { phase, winner, start } = useDraw(members)
 
+  useEffect(() => {
+    preload('coin')
+    return stop
+  }, [])
+
   const shown = members[face]
 
   function flip() {
@@ -40,6 +46,9 @@ export function CoinScreen({ chore, members, onSettled }: Props) {
             return
           }
 
+          // Flip length varies with parity (6 or 7 half-flips), so the exact
+          // duration is handed over and the player decides loop vs fade.
+          play('coin', { durationMs: flips * HALF_FLIP_MS })
           setFlipping(true)
           let done = 0
           const tick = window.setInterval(() => {

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FateLayout } from './FateLayout'
 import { Die } from './Die'
 import { useDraw } from './useDraw'
 import { rollDice } from './engine'
 import { MemberAvatar, StaticRow } from '../ui'
+import { play, preload, stop } from '../audio/player'
 import type { Chore, Member } from '../data'
 import styles from './DiceScreen.module.css'
 
@@ -34,6 +35,11 @@ export function DiceScreen({ chore, members, onSettled }: Props) {
   const [highlight, setHighlight] = useState<number | null>(null)
   const { phase, winner, start } = useDraw(members)
 
+  useEffect(() => {
+    preload('dice')
+    return stop
+  }, [])
+
   function roll() {
     start(
       (picked, reducedMotion) =>
@@ -48,6 +54,8 @@ export function DiceScreen({ chore, members, onSettled }: Props) {
             return
           }
 
+          // Sound runs for the throw only, ending when the dice settle.
+          play('dice', { durationMs: TUMBLE_MS })
           setTumbling(true)
           window.setTimeout(() => {
             setTumbling(false)

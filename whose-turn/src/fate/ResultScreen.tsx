@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell, Button, Heading, PillChip, Subtitle } from '../ui'
 import { resultPillCopy } from './choreCopy'
+import { play, stop } from '../audio/player'
 import confetti from '../assets/illustrations/confetti.png'
 import type { Chore, Member } from '../data'
 import styles from './ResultScreen.module.css'
@@ -19,6 +21,12 @@ type Props = {
  */
 export function ResultScreen({ chore, winner, onAccept }: Props) {
   const navigate = useNavigate()
+
+  // Once, on appearance. No durationMs -> no loop, no fade; it simply plays out.
+  useEffect(() => {
+    play('winner')
+    return stop
+  }, [])
 
   function accept() {
     onAccept()
