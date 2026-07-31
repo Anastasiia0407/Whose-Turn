@@ -69,9 +69,10 @@ export function OnboardingMembersScreen() {
                 {`Member ${index + 1}`}
               </SectionLabel>
               <div className={styles.memberRow}>
-                // No member row exists yet — this previews the colour the member
-                  // WILL be assigned at creation, from the same helper the insert uses.
-                  <MemberAvatar color={colorForMemberIndex(index)} name={name} />
+                {/* No member row exists yet, so this previews the colour the
+                    member WILL be assigned at creation, from the same helper
+                    the insert uses. */}
+                <MemberAvatar color={colorForMemberIndex(index)} name={name} />
                 <input
                   id={`${fieldId}-${index}`}
                   className={styles.bareInput}
