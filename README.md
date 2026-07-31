@@ -48,6 +48,24 @@ Both are safe in a browser bundle — the publishable key grants nothing on its
 own, because row-level security denies everything without a session.
 `.env.local` is gitignored and must never be committed.
 
+## Deploying to Vercel
+
+The app is a subdirectory of this repo, so the project's **Root Directory must be
+`whose-turn`** — everything else is auto-detected from `whose-turn/vercel.json`
+(Vite, `npm run build`, `dist`).
+
+Two environment variables are required **at build time**. Vite inlines `VITE_*`
+values into the bundle when it builds, so adding them after a deploy has no
+effect — they must exist before the build, and changing them needs a redeploy.
+
+```
+VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_...
+```
+
+`vercel.json` also rewrites all non-asset paths to `index.html`, which client-side
+routing needs — without it a direct hit on `/login` or `/fate/wheel` 404s.
+
 ## The auth tradeoff — read this
 
 **Email is an identifier, not a credential.** You type an email on the login
