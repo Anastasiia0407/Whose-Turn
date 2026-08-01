@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react'
 import { Button } from './Button'
+import { useBlockInsets } from './useBlockInsets'
 import styles from './BottomSheet.module.css'
 
 const FOCUSABLE =
@@ -11,6 +12,18 @@ type BottomSheetProps = {
   /** Sheet heading. Pass `accentTitle` to render a second, terracotta word. */
   title: string
   accentTitle?: string
+  /**
+   * Opt in to the fixed-frame layout: the handle and header stop taking part in
+   * the flow and become an opaque block pinned over the content, so a list
+   * inside can scroll BEHIND them instead of stopping at the header's edge.
+   *
+   * Opt-in on purpose — the new-chore and fate-mode sheets do not get this
+   * pattern and must keep laying out exactly as they do now.
+   *
+   * The measured height of that block is published as `--sheet-top-block` for
+   * the content to pad against.
+   */
+  framed?: boolean
   children: ReactNode
 }
 
@@ -27,11 +40,15 @@ export function BottomSheet({
   onClose,
   title,
   accentTitle,
+  framed = false,
   children,
 }: BottomSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const titleId = useId()
+  // Same hook home uses. Only the top slot is needed here; the content owns its
+  // own bottom block and measures that itself.
+  const { insets, topRef } = useBlockInsets()
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -101,30 +118,43 @@ export function BottomSheet({
     >
       <div
         ref={sheetRef}
-        className={styles.sheet}
+        className={[styles.sheet, framed ? styles.framed : null]
+          .filter(Boolean)
+          .join(' ')}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
+        style={
+          framed
+            ? ({ '--sheet-top-block': `${insets.top}px` } as React.CSSProperties)
+            : undefined
+        }
       >
-        <div className={styles.handle} aria-hidden="true">
-          <div className={styles.handleBar} />
-        </div>
+        {/* Handle and header always share a wrapper so the framed variant has a
+            single contiguous block to pin — a gap between them would let rows
+            show through. Unframed, the wrapper is unstyled and the flow is
+            exactly as before. */}
+        <div className={styles.topBlock} ref={framed ? topRef : undefined}>
+          <div className={styles.handle} aria-hidden="true">
+            <div className={styles.handleBar} />
+          </div>
 
-        <div className={styles.header}>
-          <h2 id={titleId} className={styles.title}>
-            {title}
-            {accentTitle ? (
-              <span className={styles.titleAccent}>{accentTitle}</span>
-            ) : null}
-          </h2>
-          <Button
-            variant="icon"
-            tone="canvas"
-            leadingIcon="x"
-            aria-label={`Close ${title}${accentTitle ?? ''}`}
-            onClick={onClose}
-          />
+          <div className={styles.header}>
+            <h2 id={titleId} className={styles.title}>
+              {title}
+              {accentTitle ? (
+                <span className={styles.titleAccent}>{accentTitle}</span>
+              ) : null}
+            </h2>
+            <Button
+              variant="icon"
+              tone="canvas"
+              leadingIcon="x"
+              aria-label={`Close ${title}${accentTitle ?? ''}`}
+              onClick={onClose}
+            />
+          </div>
         </div>
 
         <div className={styles.body}>{children}</div>

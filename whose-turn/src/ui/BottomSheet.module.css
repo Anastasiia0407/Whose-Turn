@@ -19,7 +19,22 @@
 /* The sheet never exceeds the viewport, and its own body scrolls rather than
    the page behind it — so on a short screen the CTA can never be pushed
    off-screen. Bottom padding clears the home indicator on notched devices. */
+/* THE BORDER LIVES INSIDE THE GUTTER, not on top of it.
+ *
+ * In Figma the sheet is 390 wide including its own outline, and rows sit at
+ * x=16 with width 358. So the 16px gutter is measured from the sheet's OUTER
+ * edge and the 3px border is part of it — the inner padding is 16 - 3 = 13,
+ * which lands rows on 358 with no special case. Adding a full 16 inside the
+ * border instead inset everything by 19 and made rows 352.
+ *
+ * Same on the block axis: the header is 32 from the outer edge, so 29 from the
+ * padding box. There is no bottom border (the sheet is docked to the viewport
+ * edge), so the bottom padding is unadjusted.
+ *
+ * This applies to any bordered container carrying Figma-measured offsets. */
 .sheet {
+  --sheet-gutter: calc(var(--layout-gutter) - var(--border-lg));
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -27,9 +42,9 @@
   width: 100%;
   max-width: var(--layout-canvas-width);
   max-height: calc(90dvh - var(--keyboard-inset, 0px));
-  padding-block: var(--spacing-sheet-top)
+  padding-block: calc(var(--spacing-sheet-top) - var(--border-lg))
     calc(var(--spacing-4xl) + env(safe-area-inset-bottom, 0px));
-  padding-inline: var(--layout-gutter);
+  padding-inline: var(--sheet-gutter);
   background: var(--color-background-primary);
   border-top: var(--border-lg) solid var(--color-border-default);
   border-left: var(--border-lg) solid var(--color-border-default);
@@ -48,6 +63,46 @@
   to {
     transform: translateY(0);
   }
+}
+
+/* -- Framed variant (opt-in) -------------------------------------------- *
+ *
+ * Used only by the members sheet. The handle and header leave the flow and
+ * become an opaque block pinned over the content, so the list scrolls BEHIND
+ * them rather than stopping at the header's edge.
+ *
+ * The sheet drops its own inline and top padding here, because the scroller
+ * inside must span the full width with the gutters as padding INSIDE it — a
+ * scroll container clips both axes, so a gutter applied outside it would put
+ * the rows' 4px hard shadows on the clipped side of the boundary. The top
+ * block and the bottom block re-apply the gutter themselves.
+ *
+ * The body stays IN FLOW on purpose. A scroller has no intrinsic height, so
+ * taking it out of flow would collapse the sheet; in flow, the sheet still
+ * grows with its content up to the 90dvh cap and only then does the list
+ * scroll — exactly as it did before. */
+.framed {
+  padding-block-start: 0;
+  padding-inline: 0;
+}
+
+.framed .topBlock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  /* 32 from the sheet's outer edge, less the 3px top border it sits inside. */
+  padding-block-start: calc(var(--spacing-sheet-top) - var(--border-lg));
+  padding-inline: var(--sheet-gutter);
+  /* Opaque, so rows genuinely disappear behind it. No fade, gradient, blur or
+     divider — none of that is in the design. */
+  background: var(--color-background-primary);
+}
+
+/* Positioning context for the content's own pinned bottom block. */
+.framed .body {
+  position: relative;
 }
 
 /* Grab handle — node 76:54, sitting above the sheet's top padding and

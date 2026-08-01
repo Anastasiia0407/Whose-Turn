@@ -1,8 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { BottomSheet, Button, MemberAvatar, StaticRow, TextField } from '../ui'
+import { useBlockInsets } from '../ui/useBlockInsets'
 import { SwipeRow } from './SwipeRow'
 import type { Member } from '../data'
 import styles from './Sheets.module.css'
+
+/** Node 65:44 leaves 24px between the list and the pinned bottom block. */
+const BLOCK_GAP = 24
 
 type MembersSheetProps = {
   open: boolean
@@ -38,6 +42,9 @@ export function MembersSheet({
 }: MembersSheetProps) {
   const [name, setName] = useState('')
   const [openRowId, setOpenRowId] = useState<string | null>(null)
+  // Same hook home uses. Only the bottom slot is needed; BottomSheet measures
+  // its own top block and publishes it as --sheet-top-block.
+  const { insets, bottomRef } = useBlockInsets()
 
   const trimmed = name.trim()
   const canSubmit = trimmed.length > 0 && !busy
@@ -50,29 +57,38 @@ export function MembersSheet({
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Members">
-      <div className={styles.list}>
-        {members.map((member) => (
-          <SwipeRow
-            key={member.id}
-            deleteLabel={`Remove ${member.name}`}
-            onRequestDelete={() => void onRemove(member)}
-            open={openRowId === member.id}
-            onOpenChange={(next) => setOpenRowId(next ? member.id : null)}
-            focusableRow
-            rowLabel={member.name}
-          >
-            <StaticRow
-              label={member.name}
-              leading={
-                <MemberAvatar color={member.color} name={member.name} />
-              }
-            />
-          </SwipeRow>
-        ))}
+    <BottomSheet open={open} onClose={onClose} title="Members" framed>
+      {/* The scroller spans the whole sheet body; the handle/header block above
+          it and the form below it are both opaque and pinned, so member rows
+          pass behind them rather than stopping at their edge. */}
+      <div
+        className={styles.scroller}
+        style={{ paddingBottom: `${insets.bottom + BLOCK_GAP}px` }}
+      >
+        <div className={styles.list}>
+          {members.map((member) => (
+            <SwipeRow
+              key={member.id}
+              deleteLabel={`Remove ${member.name}`}
+              onRequestDelete={() => void onRemove(member)}
+              open={openRowId === member.id}
+              onOpenChange={(next) => setOpenRowId(next ? member.id : null)}
+              focusableRow
+              rowLabel={member.name}
+            >
+              <StaticRow
+                className={styles.memberRow}
+                label={member.name}
+                leading={
+                  <MemberAvatar color={member.color} name={member.name} />
+                }
+              />
+            </SwipeRow>
+          ))}
+        </div>
       </div>
 
-      <form className={styles.content} onSubmit={onSubmit}>
+      <form className={styles.bottomBlock} ref={bottomRef} onSubmit={onSubmit}>
         <TextField
           label="Member name"
           hideLabel

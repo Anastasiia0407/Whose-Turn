@@ -15,28 +15,75 @@
   width: 100%;
 }
 
-/* Member list above the add form — node 69:83, gap 16.
-   This is the sheet's scrolling region, so the add form and its CTA below stay
-   pinned and visible even on a short viewport. Padding leaves room for the 4px
-   hard shadows so they are not clipped by the scrollport. */
-.list {
+/* Members sheet scroller — node 65:44.
+ *
+ * Spans the full sheet width with NO side padding of its own; the 16px gutters
+ * and the room for the rows' 4px hard shadow are padding INSIDE it. It used to
+ * pad itself 8px and pull back with a matching negative margin, which made the
+ * rows wider than the container's content box — the exact defect this removes.
+ * A scroll container clips on both axes, so no amount of outside padding could
+ * have saved the shadow.
+ *
+ * In flow, not absolute: a scroller has no intrinsic height, so taking it out
+ * of flow would collapse the sheet. This way the sheet still sizes to its
+ * content up to the 90dvh cap.
+ *
+ * Block padding is the two blocks' MEASURED heights plus the design's 24px
+ * gaps — top block 76 + 24 puts the first row on y=100, and bottom block 128 +
+ * 24 puts the block on y=252, both matching the frame. */
+.scroller {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--spacing-xl);
   min-height: 0;
   overflow-y: auto;
-  overflow-x: clip; /* vertical scrolling only */
+  overflow-x: clip; /* vertical scrolling only — never a sideways scrollbar */
   overscroll-behavior: contain;
-  /* Padding gives the 4px hard shadow room inside the scrollport; the matching
-     negative margin keeps the rows on the sheet's own 16px gutter. */
-  padding: var(--spacing-2xs) var(--spacing-md) var(--spacing-md);
-  margin-inline: calc(var(--spacing-md) * -1);
+  -webkit-overflow-scrolling: touch;
+  /* 16px from the sheet's OUTER edge — the 3px border lives inside the gutter.
+     See the note on .sheet in BottomSheet.module.css. */
+  padding-inline: var(--sheet-gutter);
+  padding-block-start: calc(
+    var(--sheet-top-block, 0px) + var(--spacing-3xl)
+  );
 }
 
-/* The add form never shrinks — the CTA must stay on screen. */
-.content {
-  flex-shrink: 0;
+/* Node 69:83: rows 358x56 on a 72px pitch, i.e. a 16px gap.
+   Rows never shrink — a short sheet scrolls, it does not squash them. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.list > * {
+  flex: 0 0 auto;
+}
+
+/* The shared row pads 14px block, which is what keeps a 24px text row at 56.
+   The avatar here is 32 (node 69:74), and 14 + 32 + 14 + 4 of border makes 64,
+   breaking the 72px pitch. Trimming the padding lets the row's own 56px
+   min-height govern again: the avatar lands centred at +12 and the row is 56,
+   both matching the frame. Scoped to this row so nothing else shifts. */
+.memberRow {
+  padding-block: var(--spacing-md);
+}
+
+/* Node 61:51: the field and the Add member CTA, 128 tall, pinned to the bottom
+   of the sheet's content area and opaque so rows disappear behind it. */
+.bottomBlock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  /* 16px from the sheet's OUTER edge — the 3px border lives inside the gutter.
+     See the note on .sheet in BottomSheet.module.css. */
+  padding-inline: var(--sheet-gutter);
+  background: var(--color-background-primary);
 }
 
 .error {
