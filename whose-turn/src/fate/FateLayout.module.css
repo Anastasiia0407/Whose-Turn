@@ -37,16 +37,34 @@
   width: 100%;
 }
 
-/* Wheel-Section — node 86:97: flex 1, centred. */
+/* Wheel-Section — node 86:97: flex 1, centred.
+ *
+ * This is the FLEXIBLE zone: nav, chips row and footer keep their Figma heights
+ * and their 24px gaps, and every bit of viewport-height variation is absorbed
+ * here. `flex-basis: 0` is what makes that true — with `auto` the hero's base
+ * size is its content, so a 350px wheel would force the whole column taller
+ * than the screen and shove the CTA off the bottom.
+ *
+ * `container-type: size` publishes this zone's resolved HEIGHT as `cqh`, which
+ * is what the wheel, dice and coin size themselves against. Size containment is
+ * required for cqh to exist, and is safe precisely because the basis is 0: the
+ * zone's height never depended on its contents anyway.
+ *
+ * Below the point where the hero can no longer fit its floor-size hero art, it
+ * scrolls rather than overflowing into the footer.
+ */
 .hero {
+  container-type: size;
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xl);
   width: 100%;
   min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 /* Node 92:385: caption + CTA, gap 16. */

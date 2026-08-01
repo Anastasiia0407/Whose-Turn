@@ -14,8 +14,12 @@ import { NewChoreSheet } from '../features/NewChoreSheet'
 import { MembersSheet } from '../features/MembersSheet'
 import { FateModeSheet } from '../fate/FateModeSheet'
 import { useNavigate } from 'react-router-dom'
+import { useBlockInsets } from '../ui/useBlockInsets'
 import type { FateMode } from '../data'
 import styles from './HomeScreen.module.css'
+
+/** Node 2:141 leaves 10px between the section label and the first chore row. */
+const FIRST_ROW_GAP = 10
 
 /**
  * Home — Figma 75:16 (nothing selected), 2:141 (chore selected), 70:8 (delete).
@@ -43,6 +47,7 @@ export function HomeScreen() {
   const [fateSheetOpen, setFateSheetOpen] = useState(false)
   // Only one row is revealed at a time; opening another closes the previous.
   const [openRowId, setOpenRowId] = useState<string | null>(null)
+  const { insets, topRef, bottomRef } = useBlockInsets()
 
   const canDraw = selectedChoreId !== null && data.state === 'ready'
 
@@ -55,33 +60,19 @@ export function HomeScreen() {
 
   return (
     <AppShell>
+      {/* A fixed frame with one scrolling list between two opaque blocks.
+          The scroller is a SIBLING of the blocks, not a child, and spans the
+          whole frame — so rows slide behind the header and the buttons rather
+          than stopping at their edge. Its top and bottom padding are the two
+          block heights, so the first and last chore can each clear them. */}
       <div className={styles.body}>
-        <header className={styles.header}>
-          <div className={styles.titles}>
-            <Heading
-              accent="Turn?"
-              rest="Whose "
-              accentPosition="trailing"
-              size="h1"
-            />
-            <Subtitle>Settle chore disputes fairly!</Subtitle>
-          </div>
-          <Button
-            variant="icon"
-            tone="accent"
-            leadingIcon="members"
-            aria-label="Members"
-            onClick={() => {
-              data.clearActionError()
-              setMembersSheetOpen(true)
-            }}
-          />
-        </header>
-
-        <section className={styles.listSection}>
-          <SectionLabel>Who&apos;s doing it today?</SectionLabel>
-
-          {/* The list is the only scrolling region; header and footer stay put. */}
+        <div
+          className={styles.scroller}
+          style={{
+            paddingTop: `${insets.top + FIRST_ROW_GAP}px`,
+            paddingBottom: `${insets.bottom}px`,
+          }}
+        >
           <div className={styles.list}>
             {/* While loading, the list area renders nothing at all — no copy,
                 no spinner, no skeleton. None of those exist in the frames. */}
@@ -130,9 +121,38 @@ export function HomeScreen() {
               </p>
             ) : null}
           </div>
-        </section>
+        </div>
 
-        <div className={styles.footer}>
+        {/* Opaque, and stacked above the scroller — this is what rows disappear
+            behind. Header 86 + 24 gap + label 22, from node 2:141. */}
+        <div className={styles.topBlock} ref={topRef}>
+          <header className={styles.header}>
+            <div className={styles.titles}>
+              <Heading
+                accent="Turn?"
+                rest="Whose "
+                accentPosition="trailing"
+                size="h1"
+              />
+              <Subtitle>Settle chore disputes fairly!</Subtitle>
+            </div>
+            <Button
+              variant="icon"
+              tone="accent"
+              leadingIcon="members"
+              aria-label="Members"
+              onClick={() => {
+                data.clearActionError()
+                setMembersSheetOpen(true)
+              }}
+            />
+          </header>
+          <SectionLabel>Who&apos;s doing it today?</SectionLabel>
+        </div>
+
+        {/* Also opaque across its full height, so nothing shows through the
+            16px gap between the two buttons. Node 1:159: 132 tall. */}
+        <div className={styles.bottomBlock} ref={bottomRef}>
           <Button
             variant="secondary"
             leadingIcon="plus"

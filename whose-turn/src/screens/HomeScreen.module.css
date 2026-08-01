@@ -5,14 +5,77 @@
    44px status bar — i.e. y=70 in the frame. AppShell places the status bar but
    not that gap, so it is added here rather than globally: onboarding's frames
    (82:10 / 83:18) use pt-36 with no gap and must not shift. */
+/* Home — Figma frames 75:16 / 2:141 / 70:8, all now 390x700.
+ *
+ * A FIXED FRAME with one scrolling list. Geometry from 2:141, rebased against
+ * the safe-area top (Figma's y includes the 44px status bar, which we do not
+ * draw): header 70->26, section label 180->136, first row 212->168, bottom
+ * block 528->484 and 132 tall.
+ *
+ *   top block    26 + header 86 + gap 24 + label 22   = 158
+ *   first row    168  (the design leaves 10px under the label)
+ *   bottom block 132, sitting flush at the bottom of the content area
+ *
+ * The scroller is a SIBLING of the two blocks and spans the whole frame, so
+ * rows pass BEHIND them instead of stopping at their edge. The blocks are
+ * opaque canvas and stack above it.
+ */
+
+/* Full-bleed: the shell's 16px gutter is cancelled here and re-applied as
+   padding INSIDE the scroller. This is the Part 2 rule — a scroll container
+   clips on both axes, so a gutter applied OUTSIDE it would put the rows' 4px
+   hard shadows on the clipped side of the boundary. Inside, the shadow lands
+   in the scroller's own right padding and stays visible. */
 .body {
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: column;
-  gap: var(--spacing-3xl);
-  width: 100%;
-  padding-block-start: calc(var(--spacing-2xs) + var(--spacing-3xl));
+  position: relative;
+  flex: 1 1 auto;
+  width: auto;
   min-height: 0;
+  margin-inline: calc(var(--layout-gutter) * -1);
+}
+
+/* Spans the entire frame, top to bottom, behind both blocks. */
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  /* Vertical scrollers clip horizontally too; `clip` avoids ever producing a
+     sideways scrollbar while still letting the padding show the shadow. */
+  overflow-x: clip;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  /* Inline gutter only. The block-direction padding is set from the MEASURED
+     block heights in HomeScreen (see useBlockInsets), because the rendered
+     blocks do not match the frame exactly and a hard-coded constant would
+     leave the first or last row unable to clear them. */
+  padding-inline: var(--layout-gutter);
+}
+
+.topBlock,
+.bottomBlock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--layout-gutter);
+  /* Opaque so rows genuinely disappear rather than showing through. No fade,
+     gradient, blur or divider — none of that is in the design. */
+  background: var(--color-background-primary);
+}
+
+.topBlock {
+  top: 0;
+  gap: var(--spacing-3xl);
+  padding-block-start: calc(var(--spacing-2xs) + var(--spacing-3xl));
+}
+
+/* Node 1:159: 132 tall, gap 16, flush with the bottom of the content area —
+   the 40px below it is the shell's own bottom padding plus the safe area. */
+.bottomBlock {
+  bottom: 0;
+  gap: var(--spacing-xl);
 }
 
 /* Header — node 75:26: gap 24, pt 12, pb 2, items centred. */
@@ -61,47 +124,16 @@
   white-space: nowrap;
 }
 
-/* List container — node 75:33: flex 1, gap 8.
-   Shrinkable, so the list inside it can scroll instead of the whole page. */
-.listSection {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  width: 100%;
-  min-height: 0;
-  padding-inline: var(--spacing-2xs);
-}
-
-/* Node 75:35: gap 16.
-   The ONLY scrolling region on home — header and footer stay put. Padding is
-   generous enough that the 4px hard shadows are not clipped by the scrollport. */
+/* Node 1:144: rows 350x56 on a 72px pitch, i.e. a 16px gap.
+   Rows never shrink — a short frame scrolls, it does not squash them. */
 .list {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--spacing-xl);
-  min-height: 0;
-  /* A vertical scrollport also clips horizontally, which was cutting the 4px
-     hard shadows off. The padding gives the shadow its own room and the equal
-     negative margin pulls the rows back onto the 16px gutter, so the shadow is
-     fully visible without the row shifting inwards. */
-  padding: var(--spacing-2xs) var(--spacing-md) var(--spacing-md);
-  margin-inline: calc(var(--spacing-md) * -1);
-  overflow-y: auto;
-  overflow-x: clip; /* vertical scrolling only — never a sideways scrollbar */
-  /* Keep the scroll contained: no chaining to the page behind it. */
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
 }
 
-/* Bottom container — node 75:43: gap 16. */
-.footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
-  width: 100%;
-  padding-block: var(--spacing-2xs);
+.list > * {
+  flex: 0 0 auto;
 }
 
 /* "Add a new chore" is cream-filled on the home frames (nodes 75:44, 1:125,

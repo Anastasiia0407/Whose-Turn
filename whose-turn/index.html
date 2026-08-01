@@ -9,7 +9,13 @@
          renders a transparent PNG on black. -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- interactive-widget=resizes-content makes Android shrink the layout
+         viewport when the keyboard opens instead of overlaying it, so a CTA in
+         normal flow stays reachable. iOS ignores it; see useViewportHeight. -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
     <meta name="theme-color" content="#fff9ee" />
     <!-- Home-screen label. Without this iOS derives it from <title>. -->
     <meta name="apple-mobile-web-app-title" content="Whose Turn?" />

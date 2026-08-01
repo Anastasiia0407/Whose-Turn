@@ -100,7 +100,11 @@
   --type-label-family: var(--font-display);
   --type-label-weight: 700;
   --type-label-size: 12px;
-  --type-label-line: 1;
+  /* 22px, not 1. The Figma style reads "12/100", which was taken as 100% and
+     gave a 12px line box — but the text nodes are 354x22 for a single line at
+     12px (2:141 node 2:155, and the same on 65:6 / 63:5 / 130:146). The file
+     is the source of truth, so the token follows it. */
+  --type-label-line: 22px;
 
   /* -- Typography: NOT-IN-FIGMA (real sizes, no variable) ------------- */
   /* Bottom-sheet header, nodes 61:60 / 64:8 / 130:185. */

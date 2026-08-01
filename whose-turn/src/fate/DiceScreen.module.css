@@ -39,6 +39,9 @@
 }
 
 /* Dice area — the one block that flexes with viewport height. */
+/* The padding and the diagonal stagger both cost height, so both give it back
+   when the flexible zone is short — otherwise they would eat the room the dice
+   themselves need. */
 .dice {
   display: flex;
   flex-wrap: wrap;
@@ -46,15 +49,15 @@
   justify-content: center;
   gap: clamp(var(--spacing-md), 3vw, var(--spacing-2xl));
   width: 100%;
-  padding-block: var(--spacing-2xl);
+  padding-block: clamp(0px, 6cqh, var(--spacing-2xl));
 }
 
 /* Figma staggers the dice diagonally across the area rather than lining them
    up in a row (nodes 104:476 at y=228, 104:478 at y=96). */
 .dice > *:nth-child(odd) {
-  transform: translateY(clamp(10px, 4vw, 26px));
+  transform: translateY(clamp(4px, min(4vw, 4cqh), 26px));
 }
 
 .dice > *:nth-child(even) {
-  transform: translateY(clamp(-26px, -4vw, -10px));
+  transform: translateY(calc(clamp(4px, min(4vw, 4cqh), 26px) * -1));
 }

@@ -2,9 +2,14 @@
    No box-shadow: the exported illustration carries its own outline and shading,
    exactly as designed. */
 
+/* Height-aware as well as width-aware: `cqh` is the flexible zone's height
+   (FateLayout .hero). A die is taller than it is wide (161/149), and the row is
+   staggered vertically on top of that, so height is the binding constraint on a
+   short viewport long before width is. 56px is the floor. */
 .die {
-  width: clamp(84px, 26vw, 149px);
+  width: clamp(56px, min(26vw, 38cqh), 149px);
   aspect-ratio: 149 / 161;
+  flex: 0 0 auto;
 }
 
 .inner {

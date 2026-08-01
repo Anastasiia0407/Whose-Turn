@@ -6,13 +6,21 @@
  * visible, which is why the track is padded rather than tight.
  */
 
+/* No padding, no negative margin, and NO clipping of its own.
+ *
+ * It used to pad itself and pull back with a negative margin to keep the row's
+ * 4px hard shadow clear of its own `overflow: hidden`. That made the track
+ * wider than the row and pushed it outside the 16px gutter — and a clipping
+ * box here is exactly what Part 2 forbids, because clipping one axis clips
+ * both, so the shadow could never survive.
+ *
+ * Nothing needs to clip here: the delete control sits one full row width plus a
+ * gap to the right, which puts it past the scroller's edge at rest, and the
+ * scroller already clips horizontally. On reveal the row translates left and
+ * brings the control into view. The shadow now has the scroller's own padding
+ * to live in. */
 .track {
-  /* Room for the 4px hard shadow on all sides, pulled back onto the gutter. */
-  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md)
-    var(--spacing-xs);
-  margin: calc(var(--spacing-xs) * -1) calc(var(--spacing-md) * -1)
-    calc(var(--spacing-md) * -1) calc(var(--spacing-xs) * -1);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .wrap {

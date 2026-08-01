@@ -36,42 +36,40 @@ export function LoginScreen() {
   return (
     <AppShell bleed>
       <div className={styles.canvas}>
-        {/* Decorative — real vectors exported from Figma, not redrawn. */}
-        <div
-          className={styles.wheel}
-          aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: wheelSvg }}
-        />
-        {/* Node 179:195 is a COIN, not a ball. Two stacked faces so the flip
-            swaps colour via opacity rather than repainting a background. */}
-        <div className={styles.coin} aria-hidden="true">
-          <div className={`${styles.coinFace} ${styles.coinFaceA}`} />
-          <div className={`${styles.coinFace} ${styles.coinFaceB}`} />
-        </div>
-        <div className={styles.dice} aria-hidden="true">
-          <div className={styles.diceInner}>
-            <div
-              className={styles.diceAmber}
-              dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
-            />
-            <div
-              className={styles.diceTerracotta}
-              dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
-            />
+        {/* Three zones, top to bottom: a flexible decorative stage, the fixed
+            content block, and a flexible dice stage. At 390x844 they resolve to
+            exactly the Figma geometry (stage 0-275, content 275-570, dice
+            570-844); on a shorter viewport the two stages give up their height
+            and the content block — headline, field and CTA — never moves off
+            screen. It used to be one absolutely-positioned canvas sized purely
+            by WIDTH, which is why a short viewport pushed the CTA below the
+            fold. */}
+        <div className={styles.stage} aria-hidden="true">
+          {/* Decorative — real vectors exported from Figma, not redrawn. */}
+          <div
+            className={styles.wheel}
+            dangerouslySetInnerHTML={{ __html: wheelSvg }}
+          />
+          {/* Node 179:195 is a COIN, not a ball. Two stacked faces so the flip
+              swaps colour via opacity rather than repainting a background. */}
+          <div className={styles.coin}>
+            <div className={`${styles.coinFace} ${styles.coinFaceA}`} />
+            <div className={`${styles.coinFace} ${styles.coinFaceB}`} />
           </div>
         </div>
 
-        <h1 className={styles.headline}>
-          Whose <span className={styles.headlineAccent}>Turn?</span>
-        </h1>
+        <div className={styles.content}>
+          <h1 className={styles.headline}>
+            Whose <span className={styles.headlineAccent}>Turn?</span>
+          </h1>
 
-        <p className={styles.subtitle}>
-          Set up your household and
-          <br />
-          let fate assign the chores
-        </p>
+          <p className={styles.subtitle}>
+            Set up your household and
+            <br />
+            let fate assign the chores
+          </p>
 
-        <form className={styles.form} onSubmit={onSubmit} noValidate>
+          <form className={styles.form} onSubmit={onSubmit} noValidate>
           <SectionLabel className={styles.label}>Email</SectionLabel>
           <div className={styles.field}>
             <TextField
@@ -104,11 +102,27 @@ export function LoginScreen() {
           </div>
 
           {error ? (
-            <p className={styles.error} role="alert">
-              {error}
-            </p>
-          ) : null}
-        </form>
+              <p className={styles.error} role="alert">
+                {error}
+              </p>
+            ) : null}
+          </form>
+        </div>
+
+        <div className={styles.diceStage} aria-hidden="true">
+          <div className={styles.dice}>
+            <div className={styles.diceInner}>
+              <div
+                className={styles.diceAmber}
+                dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
+              />
+              <div
+                className={styles.diceTerracotta}
+                dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </AppShell>
   )

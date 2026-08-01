@@ -4,8 +4,9 @@
  * is fluid. Side gutters stay 16px at every width and content stretches to fill
  * what is left. Above 390 the column stays centred rather than stretching.
  *
- * Height uses 100dvh with a 100vh fallback — 100vh alone is wrong in iOS Safari
- * while the browser chrome is visible and pushes content under the toolbar.
+ * Height is 100dvh, never 100vh: vh is the LARGEST viewport, so while the iOS
+ * chrome is visible a 100vh box is taller than the screen and pushes its bottom
+ * content under the toolbar. dvh tracks the chrome collapsing and expanding.
  *
  * There is no fake status bar or home indicator. The space they used to take is
  * the real safe-area inset, which is 0 on a desktop browser and non-zero on a
@@ -14,14 +15,23 @@
  * safe-area top rather than copied straight across.
  */
 
+/* Height is the visible viewport minus anything covering it that CSS units
+   cannot see — i.e. the iOS keyboard. --keyboard-inset is 0 unless a keyboard
+   is overlaying (see useViewportFit), so this is plain 100dvh the rest of the
+   time and on Android, where the layout viewport already shrinks itself. */
 .shell {
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: var(--layout-canvas-width);
-  min-height: 100vh; /* fallback for browsers without dvh */
-  min-height: 100dvh;
+  /* Both bounds, deliberately. `min-height` alone is only a FLOOR: the shell
+     would simply grow past the viewport, so no descendant was ever
+     over-constrained and the inner scroll regions never engaged — the page
+     scrolled instead and the CTA went with it. Capping the height is what
+     forces the flexible zone to give way and its scrollport to take over. */
+  min-height: calc(100dvh - var(--keyboard-inset, 0px));
+  max-height: calc(100dvh - var(--keyboard-inset, 0px));
   margin-inline: auto;
   padding-inline: var(--layout-gutter);
   padding-block-start: env(safe-area-inset-top, 0px);
@@ -36,7 +46,6 @@
 .bleed {
   padding-inline: 0;
   padding-block: 0;
-  min-height: 100vh;
   min-height: 100dvh;
   /* NOT `height` + `overflow: hidden`: on a viewport shorter than the frame's
      aspect ratio that silently cut the dice off below the fold. The composition
@@ -60,4 +69,23 @@
   gap: var(--spacing-3xl);
   width: 100%;
   min-height: 0;
+}
+
+/* Last resort, and only while a keyboard is overlaying the viewport.
+ *
+ * At the extreme — 320x460 with a 250px keyboard leaves 210px — the fixed parts
+ * alone (a 160px two-line title block plus a 62px CTA) cannot fit, so no amount
+ * of shrinking the flexible zone helps. The content area scrolls instead and
+ * useViewportFit scrolls the focused field and its CTA into view, which keeps
+ * both reachable rather than clipping them.
+ *
+ * Scoped to the keyboard because a vertical scrollport also clips horizontally:
+ * the inline padding gives the rows' 4px hard shadows room and the matching
+ * negative margin keeps them on the shell's gutter. */
+:global(html[data-keyboard='open']) .content {
+  overflow-y: auto;
+  overflow-x: clip;
+  overscroll-behavior: contain;
+  padding-inline: var(--spacing-2xs);
+  margin-inline: calc(var(--spacing-2xs) * -1);
 }

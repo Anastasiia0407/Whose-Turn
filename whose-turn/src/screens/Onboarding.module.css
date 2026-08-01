@@ -1,14 +1,21 @@
 /* Shared onboarding layout — Figma frames 82:10 and 83:18.
    body: flex-1, gap 24, pt 36 pb 40, px 16 (px comes from AppShell). */
 
+/* Zones: titles fixed at the top, fields flexible in the middle, CTA fixed at
+   the bottom. The CTA is the last child in NORMAL FLOW — never positioned —
+   so when the keyboard opens it rides up with the shrinking viewport instead
+   of being stranded underneath it.
+   Shrinkable (1 1 auto + min-height 0) so the middle can give way; with the
+   previous `1 0 auto` nothing could compress and the CTA left the screen. */
 .body {
   display: flex;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-3xl);
-  padding-block: 36px var(--spacing-4xl);
+  padding-block: clamp(12px, 4dvh, 36px) var(--spacing-4xl);
   width: 100%;
+  min-height: 0;
 }
 
 .titles {
@@ -20,13 +27,36 @@
 
 /* Fields are pushed to the bottom of the free space — both frames use
    justify-end on the middle container. */
+/* The flexible zone. `safe flex-end` keeps the Figma bottom-alignment while
+   there is spare room, but falls back to start-alignment once the content
+   overflows — plain `flex-end` would push the first rows out of the top of the
+   scrollport where they cannot be reached.
+   Horizontal padding + matching negative margin give the rows' 4px hard shadows
+   room inside the scrollport instead of letting it clip them. */
 .fields {
   display: flex;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   flex-direction: column;
   justify-content: flex-end;
+  justify-content: safe flex-end;
   gap: var(--spacing-3xl);
   width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: clip;
+  overscroll-behavior: contain;
+  padding: var(--spacing-2xs) var(--spacing-md);
+  margin-inline: calc(var(--spacing-md) * -1);
+}
+
+/* While the keyboard is up, the content area is already the scrollport (see
+   AppShell). Nesting a second one here clipped the focused field halfway down
+   its own box — the field is taller than the space this zone is left with, so
+   it must be allowed to overflow and let the outer scroll bring it into view
+   whole, together with its CTA. */
+:global(html[data-keyboard='open']) .fields {
+  overflow: visible;
+  min-height: auto;
 }
 
 .field {

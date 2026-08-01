@@ -20,7 +20,6 @@ html {
 }
 
 body {
-  min-height: 100vh; /* fallback for browsers without dvh */
   min-height: 100dvh;
   background: var(--color-background-primary);
   color: var(--color-text-heading);

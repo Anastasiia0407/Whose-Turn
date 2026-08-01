@@ -8,26 +8,56 @@
  *   value_in_cqw = px_at_390 / 390 * 100
  */
 
+/* THREE ZONES, not one canvas.
+ *
+ * The composition used to be a single absolutely-positioned block with
+ * `aspect-ratio: 390/844`, so its height was a function of its WIDTH alone. On
+ * a real browser viewport — 390 wide but only ~700, 553 or 460 tall — that made
+ * the block taller than the screen and pushed the email field and Get Started
+ * below the fold, behind a scroll.
+ *
+ * Now the two decorative stages are flexible and the content block is fixed, so
+ * height comes off the decoration and never off the form. Measured against the
+ * 390x844 render, the zones are stage 0-275, content 275-570, dice 570-844 —
+ * the two stages are 275 and 274, so an equal `flex: 1 1 0` split reproduces
+ * the reference to within half a pixel.
+ */
 .canvas {
   container-type: inline-size;
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  /* Keeps vertical positions proportional to width, matching the reference. */
-  aspect-ratio: 390 / 844;
-  min-height: 100vh; /* fallback for browsers without dvh */
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--keyboard-inset, 0px));
   overflow: hidden;
 }
 
-/* -- Decorative illustrations (aria-hidden, non-interactive) ------------- */
+/* -- Decorative stages (aria-hidden, non-interactive) -------------------- */
 
+/* `container-type: size` publishes each stage's own height as cqh, which is
+   what lets the illustrations shrink with the space rather than overlapping the
+   headline. cqw still resolves to the full canvas width, so their horizontal
+   geometry is untouched. */
+.stage,
+.diceStage {
+  container-type: size;
+  position: relative;
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  pointer-events: none;
+}
+
+/* Positions are a percentage of the STAGE height, so the composition keeps its
+   proportions as the stage shrinks; sizes are capped by cqh as well as cqw, so
+   the art shrinks with the zone instead of spilling out of it.
+   164x164 at (8, 58) on the 390x844 render; 58/275 = 21.09%, 164/275 = 59.6. */
 .wheel {
   position: absolute;
-  /* 164x164 at (8, 58) */
   left: 2.0513cqw;
-  top: 14.8718cqw;
-  width: 42.0513cqw;
-  height: 42.0513cqw;
+  top: 21.09%;
+  width: min(42.0513cqw, 59.6cqh);
+  aspect-ratio: 1;
   pointer-events: none;
 }
 
@@ -36,13 +66,13 @@
   height: 100%;
 }
 
-/* Node 179:195 — a COIN. 80x80 at (265, 161). */
+/* Node 179:195 — a COIN. 80x80 at (265, 161); 161/275 = 58.5%, 80/275 = 29.1. */
 .coin {
   position: absolute;
   left: 67.9487cqw;
-  top: 41.2821cqw;
-  width: 20.5128cqw;
-  height: 20.5128cqw;
+  top: 58.5%;
+  width: min(20.5128cqw, 29.1cqh);
+  aspect-ratio: 1;
   border: 0.3462cqw solid var(--color-border-default);
   border-radius: 50%;
   box-shadow: 0.4615cqw 0.4615cqw 0 var(--color-border-default);
@@ -50,13 +80,15 @@
   pointer-events: none;
 }
 
+/* 185x140.7, centred, top 695 on the reference — 125px into a 274px stage
+   (45.6%), and 140.7/274 = 51.35cqh tall. The width cap that produces that
+   height is 51.35 * (185/140.7) = 67.5cqh. */
 .dice {
   position: absolute;
-  /* ~185 wide, centred, top 695 */
   left: 50%;
   transform: translateX(-50%);
-  top: 178.2051cqw;
-  width: 47.4359cqw;
+  top: 45.6%;
+  width: min(47.4359cqw, 67.5cqh);
   pointer-events: none;
 }
 
@@ -94,10 +126,17 @@
 
 /* -- Content ------------------------------------------------------------ */
 
+/* The fixed zone. Never shrinks and never scrolls away — the whole point of the
+   restructure is that the field and its CTA stay put while the decoration
+   yields. Gaps reproduce the reference spacing: headline 275, subtitle 343
+   (17.4 after a 50.6-tall headline), form 428 (37 after a 48-tall subtitle). */
+.content {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+}
+
 .headline {
-  position: absolute;
-  top: 70.5128cqw;
-  left: 0;
   width: 100%;
   /* ~44px at 390. Scales with width so it can never wrap to two lines. */
   font-family: var(--type-h1-family);
@@ -114,10 +153,8 @@
 }
 
 .subtitle {
-  position: absolute;
-  top: 87.9487cqw;
-  left: 0;
   width: 100%;
+  margin-top: 17.4px;
   padding-inline: var(--layout-gutter);
   font-family: var(--type-body-family);
   font-weight: var(--type-body-weight);
@@ -128,10 +165,8 @@
 }
 
 .form {
-  position: absolute;
-  top: 109.7436cqw;
-  left: 0;
   width: 100%;
+  margin-top: 37px;
   padding-inline: var(--layout-gutter);
 }
 
@@ -148,9 +183,10 @@
 
 /* The field is 52 tall here, shorter than the shared 56px control, so the
    inherited vertical padding is replaced by an explicit height. */
+/* 52px at 390, but never below the 44px minimum tap target on a narrow phone. */
 .field input {
   min-height: 0;
-  height: 13.3333cqw; /* 52px at 390 */
+  height: max(44px, 13.3333cqw);
   padding-block: 0;
 }
 
@@ -160,7 +196,7 @@
 }
 
 .submit button {
-  min-height: 13.8462cqw; /* 54px at 390 */
+  min-height: max(44px, 13.8462cqw); /* 54px at 390, floored at the tap target */
   padding-block: 0;
 }
 

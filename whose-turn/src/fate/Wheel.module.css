@@ -1,9 +1,18 @@
 /* Wheel — Figma 86:78: 350px, hub 58, pointer 40 at 12 o'clock. */
 
+/* 350px at the Figma height, and smaller only when the height is not there.
+ *
+ * `100cqh` is the flexible zone's resolved height (FateLayout .hero). Sizing on
+ * width alone was the bug: at 390x460 the wheel stayed 350px tall, overflowed
+ * the zone and pushed the CTA off the bottom of the screen.
+ *
+ * The 168px floor is where it stops shrinking; below that the zone scrolls
+ * instead, which is better than a wheel too small to read the names on. */
 .wrap {
   position: relative;
-  width: min(350px, 100%);
+  width: max(168px, min(350px, 100cqw, 100cqh));
   aspect-ratio: 1;
+  flex: 0 0 auto;
 }
 
 .rotor {

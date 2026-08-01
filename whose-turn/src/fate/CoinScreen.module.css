@@ -1,20 +1,28 @@
 /* Coin — Figma 104:451: 200px circle, 3px outline, hard shadow, 72px initial. */
 
+/* Height-aware like the wheel and dice — `cqh` is the flexible zone's height
+   (FateLayout .hero). 96px is the floor; below that the zone scrolls. */
 .coin {
+  container-type: inline-size;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(160px, 52vw, 200px);
+  width: clamp(96px, min(52vw, 88cqh), 200px);
   aspect-ratio: 1;
+  flex: 0 0 auto;
   border: var(--border-lg) solid var(--color-border-default);
   border-radius: 50%;
   box-shadow: var(--shadow-hard-lg);
 }
 
+/* Tied to the coin's own width rather than the viewport's, so the initial keeps
+   its Figma proportion at every size the coin takes. `cqw` measures the CONTENT
+   box, which excludes the 3px border on each side: 72 of the 194 inside a 200px
+   coin is 37.11%, not 36% of the border box. */
 .initial {
   font-family: var(--type-body-bold-family);
   font-weight: var(--type-body-bold-weight);
-  font-size: clamp(56px, 18vw, 72px);
+  font-size: 37.11cqw;
   line-height: 1.1;
   color: var(--color-text-heading);
   text-transform: uppercase;

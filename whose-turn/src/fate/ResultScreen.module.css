@@ -20,23 +20,34 @@
   padding-block-start: var(--spacing-inline);
 }
 
-/* Node 38:52: flex 1, centred, gap 24. */
+/* Node 38:52: flex 1, centred, gap 24.
+   The flexible zone — titles above and the CTA below keep their Figma heights,
+   and this absorbs the height difference. See FateLayout .hero for why the
+   basis is 0 and why size containment is what makes `cqh` available. */
 .hero {
+  container-type: size;
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-3xl);
   width: 100%;
   min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
-/* Node 38:76: 356x240 celebration graphic. */
+/* Node 38:76: 356x240 celebration graphic.
+   Capped by the zone's height as well as its width, so on a short viewport the
+   graphic gives way rather than pushing the winner's name and the CTA down. */
 .confetti {
   width: 100%;
   max-width: 356px;
+  max-height: 62cqh;
   height: auto;
+  object-fit: contain;
+  flex: 0 1 auto;
 }
 
 /* Node 38:77: gap 16. */

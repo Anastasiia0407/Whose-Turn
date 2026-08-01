@@ -1,9 +1,13 @@
 /* Bottom sheet. Geometry from Figma nodes 64:6 (new-chore), 65:44 (members)
    and 130:183 (fate-mode). All three share the same shell. */
 
+/* The scrim's bottom is lifted off the keyboard, so the sheet docks to the top
+   of the keyboard rather than behind it. --keyboard-inset is 0 on Android and
+   desktop, where the viewport itself has already shrunk. */
 .scrim {
   position: fixed;
   inset: 0;
+  bottom: var(--keyboard-inset, 0px);
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -22,8 +26,7 @@
   gap: var(--spacing-3xl);
   width: 100%;
   max-width: var(--layout-canvas-width);
-  max-height: 90vh;
-  max-height: 90dvh;
+  max-height: calc(90dvh - var(--keyboard-inset, 0px));
   padding-block: var(--spacing-sheet-top)
     calc(var(--spacing-4xl) + env(safe-area-inset-bottom, 0px));
   padding-inline: var(--layout-gutter);
