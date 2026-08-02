@@ -1,10 +1,48 @@
-import { useState, type FormEvent } from 'react'
+import { memo, useState, type FormEvent } from 'react'
 import { AppShell, Button, SectionLabel, TextField } from '../ui'
 import { useHousehold } from '../state'
 import wheelSvg from '../assets/illustrations/wheel.svg?raw'
 import diceAmberSvg from '../assets/illustrations/die-amber.svg?raw'
 import diceTerracottaSvg from '../assets/illustrations/die-terracotta.svg?raw'
 import styles from './LoginScreen.module.css'
+
+/**
+ * The decorative layer, held apart from the screen and memoised.
+ *
+ * It has no props and never changes, but it lives on a screen that re-renders
+ * on every keystroke. Inline `dangerouslySetInnerHTML={{ __html: … }}` objects
+ * were being rewritten each time, which measurably removed and re-inserted all
+ * three SVGs per character — nine DOM removals for a three-letter word. Split
+ * out and memoised, typing no longer touches it at all.
+ */
+const LoginStage = memo(function LoginStage() {
+  return (
+    <div className={styles.stage} aria-hidden="true">
+      {/* Node 179:195 is a COIN. Two stacked faces so the flip swaps colour
+          via opacity rather than repainting a background. */}
+      <div className={styles.coin}>
+        <div className={`${styles.coinFace} ${styles.coinFaceA}`} />
+        <div className={`${styles.coinFace} ${styles.coinFaceB}`} />
+      </div>
+
+      <div
+        className={styles.wheel}
+        dangerouslySetInnerHTML={{ __html: wheelSvg }}
+      />
+
+      <div className={styles.diceGroup}>
+        <div
+          className={styles.diceAmber}
+          dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
+        />
+        <div
+          className={styles.diceTerracotta}
+          dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
+        />
+      </div>
+    </div>
+  )
+})
 
 /**
  * Login — Figma frame 179:44, recomposed at 390x700.
@@ -35,30 +73,7 @@ export function LoginScreen() {
     <AppShell bleed>
       <div className={styles.canvas}>
         {/* Decorative — real vectors exported from Figma, not redrawn. */}
-        <div className={styles.stage} aria-hidden="true">
-          {/* Node 179:195 is a COIN. Two stacked faces so the flip swaps
-              colour via opacity rather than repainting a background. */}
-          <div className={styles.coin}>
-            <div className={`${styles.coinFace} ${styles.coinFaceA}`} />
-            <div className={`${styles.coinFace} ${styles.coinFaceB}`} />
-          </div>
-
-          <div
-            className={styles.wheel}
-            dangerouslySetInnerHTML={{ __html: wheelSvg }}
-          />
-
-          <div className={styles.diceGroup}>
-            <div
-              className={styles.diceAmber}
-              dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
-            />
-            <div
-              className={styles.diceTerracotta}
-              dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
-            />
-          </div>
-        </div>
+        <LoginStage />
 
         <div className={styles.body}>
           <div className={styles.titles}>

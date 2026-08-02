@@ -118,6 +118,16 @@ Deriving from `sort_order` or array position at render time is the bug this rule
 
 The palette must scale with household size: a household of 2 uses the first two colours, a household of 5 the first five.
 
+## Focus rule
+
+**An effect that manages focus must never depend on callback identity.** If it does, any parent re-render tears the effect down and sets it up again — and the setup moves focus. Since typing re-renders the parent on every keystroke, the field loses focus on every character: on desktop you re-click for each letter, on mobile the keyboard closes.
+
+`BottomSheet` hit exactly this. Its focus-trap effect depended on a `useCallback` keyed on `onClose`, and callers pass a handler defined in their render body, so the identity changed every render. It shipped in the **initial commit (`2ab3f90`) and went unnoticed until the sound-toggle work**, because only the new-chore sheet was affected — the members sheet forwards its `onClose` prop straight through, so its identity happened to be stable. That immunity was luck, not design.
+
+The fix is to hold the callback in a ref the effect reads, so the dependency list reduces to the open state alone. **Do not wrap handlers in `useCallback` at the call sites to compensate** — that makes correctness depend on every future caller remembering, which is the thing that failed here.
+
+Focus bugs of this shape survive a value-only test: the string arrives intact, nothing unmounts, and the DOM node never changes. `src/ui/focus.test.tsx` asserts `document.activeElement` after typing, for all five fields.
+
 ## Sound rule
 
 Sound is **muteable from one place only** — the toggle in the members sheet header (nodes 251:65 bell-02 / 251:149 bell-off-01). Do not add a second toggle elsewhere; the design puts it there and nowhere else.

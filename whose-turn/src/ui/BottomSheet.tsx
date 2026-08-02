@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { Button } from './Button'
 import { useBlockInsets } from './useBlockInsets'
 import styles from './BottomSheet.module.css'
@@ -56,13 +56,37 @@ export function BottomSheet({
   // own bottom block and measures that itself.
   const { insets, topRef } = useBlockInsets()
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (!open) return
+  /**
+   * `onClose` is read through a ref so the effect below never depends on its
+   * identity.
+   *
+   * It used to: the effect depended on a `useCallback` keyed on `onClose`, and
+   * callers pass a function defined in their render body. Every parent
+   * re-render therefore produced a new identity, tore the trap down and set it
+   * up again — and the setup MOVES FOCUS. Typing re-renders the parent on every
+   * keystroke, so every keystroke pulled focus out of the field and onto the
+   * sheet's first button.
+   *
+   * The rule this encodes: an effect that manages focus must not depend on
+   * callback identity. Do not "fix" a future recurrence by wrapping the
+   * caller's handler in useCallback — that makes correctness depend on every
+   * call site remembering.
+   */
+  const onCloseRef = useRef(onClose)
+  useEffect(() => {
+    onCloseRef.current = onClose
+  })
 
+  useEffect(() => {
+    if (!open) return
+
+    returnFocusRef.current = document.activeElement as HTMLElement | null
+
+    // Defined inside the effect so it has no identity outside it.
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
 
@@ -87,20 +111,14 @@ export function BottomSheet({
         event.preventDefault()
         first.focus()
       }
-    },
-    [open, onClose],
-  )
-
-  useEffect(() => {
-    if (!open) return
-
-    returnFocusRef.current = document.activeElement as HTMLElement | null
+    }
 
     const { overflow } = document.body.style
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', handleKeyDown)
 
-    // Move focus into the sheet so keyboard users land inside it.
+    // Move focus into the sheet so keyboard users land inside it. Runs exactly
+    // once per open, which is the whole point of the dependency list below.
     const firstFocusable =
       sheetRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? sheetRef.current
     firstFocusable?.focus()
@@ -110,7 +128,7 @@ export function BottomSheet({
       document.removeEventListener('keydown', handleKeyDown)
       returnFocusRef.current?.focus()
     }
-  }, [open, handleKeyDown])
+  }, [open])
 
   if (!open) return null
 
