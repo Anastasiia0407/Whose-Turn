@@ -1,5 +1,8 @@
-/* Member identity dot. Geometry from Figma nodes 69:74 (32px, with initial)
-   and 157:63 (20px, plain dot on the dice roster).
+/* Member identity dot. THREE sizes, because the file is explicit that they
+   differ by context and does not converge them:
+     sm  20  dice roster chips        (nodes 153:37, 157:63) — plain dot
+     md  24  onboarding member rows   (node 145:25)          — plain dot
+     lg  32  members + fate-mode sheets (69:74, 130:191)     — carries a glyph
 
    The fill is never hardcoded — it is passed in from colorForMemberIndex via
    the --member-color custom property. */
@@ -25,9 +28,15 @@
   text-transform: uppercase;
 }
 
-.md {
+.lg {
   width: 32px;
   height: 32px;
+  border-width: var(--border-sm);
+}
+
+.md {
+  width: 24px;
+  height: 24px;
   border-width: var(--border-sm);
 }
 

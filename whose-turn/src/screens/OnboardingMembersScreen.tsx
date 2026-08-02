@@ -72,7 +72,8 @@ export function OnboardingMembersScreen() {
                 {/* No member row exists yet, so this previews the colour the
                     member WILL be assigned at creation, from the same helper
                     the insert uses. */}
-                <MemberAvatar color={colorForMemberIndex(index)} name={name} />
+                {/* Node 145:25 — 24px and no glyph. */}
+                <MemberAvatar color={colorForMemberIndex(index)} size="md" />
                 <input
                   id={`${fieldId}-${index}`}
                   className={styles.bareInput}

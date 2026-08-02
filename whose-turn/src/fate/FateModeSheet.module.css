@@ -62,3 +62,12 @@
   line-height: var(--type-body-line);
   color: var(--color-text-secondary);
 }
+
+/* Node 130:190 — 358x56 on a 72px pitch. The shared row pads 14px block, which
+   keeps a 24px text row at 56, but these carry a 32px glyph avatar and
+   14 + 32 + 14 + 4 of border makes 64 on an 80 pitch. Trimming the padding
+   lets the row's own 56px min-height govern again, exactly as on the members
+   sheet, putting the avatar at +12 and the row back to 56. */
+.optionRow {
+  padding-block: var(--spacing-md);
+}

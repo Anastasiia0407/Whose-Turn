@@ -7,7 +7,11 @@
    staggered vertically on top of that, so height is the binding constraint on a
    short viewport long before width is. 56px is the floor. */
 .die {
-  width: clamp(56px, min(26vw, 38cqh), 149px);
+  /* 120 at the 390x700 frame (nodes 104:476 / 157:69), down from 149.
+     Keyed to the flexible zone's width (33.5cqw of its 358 = 120), not to vw:
+     the column is capped at 390, so a vw term kept the die at 101 on a 390
+     viewport and would have over-sized it past 390. */
+  width: clamp(56px, min(33.5cqw, 38cqh), 120px);
   aspect-ratio: 149 / 161;
   flex: 0 0 auto;
 }

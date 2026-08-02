@@ -10,7 +10,8 @@ type MemberAvatarProps = {
   color: string
   /** Full name; the initial is derived from it. Omit for the plain dot. */
   name?: string
-  size?: 'sm' | 'md'
+  /** sm 20 (dice chips), md 24 (onboarding), lg 32 (sheets). */
+  size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
@@ -21,7 +22,7 @@ function initialOf(name: string): string {
 export function MemberAvatar({
   color,
   name,
-  size = 'md',
+  size = 'lg',
   className,
 }: MemberAvatarProps) {
   const style = { '--member-color': color } as CSSProperties
@@ -32,7 +33,9 @@ export function MemberAvatar({
       style={style}
       aria-hidden="true"
     >
-      {size === 'md' && name ? initialOf(name) : null}
+      {/* Only the 32px avatar carries a glyph; the 24 and 20 are plain dots in
+          their frames (145:25 and 153:37 have no text child). */}
+      {size === 'lg' && name ? initialOf(name) : null}
     </span>
   )
 }

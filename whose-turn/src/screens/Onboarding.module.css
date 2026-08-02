@@ -74,7 +74,11 @@
   width: 100%;
   min-height: 56px;
   padding-block: var(--spacing-lg);
-  padding-inline: var(--spacing-inline) var(--spacing-2xl);
+  /* Node 145:25 puts the avatar 12 from the row's OUTER edge, and this row has
+     a 2px border, so the padding is 12 - 2. Same border-box gutter rule the
+     sheets follow. */
+  padding-inline: calc(var(--spacing-inline) - var(--border-sm))
+    calc(var(--spacing-2xl) - var(--border-sm));
   background: var(--color-background-surface);
   border: var(--border-sm) solid var(--color-border-default);
   border-radius: var(--radius-md);
@@ -108,6 +112,13 @@
   flex-direction: column;
   gap: var(--spacing-inline);
   width: 100%;
+}
+
+/* Node 83:36 — the chore input is 62 tall here, not the shared control's 56. */
+.chores input {
+  min-height: 0;
+  height: 62px;
+  padding-block: 0;
 }
 
 .choreItem {
