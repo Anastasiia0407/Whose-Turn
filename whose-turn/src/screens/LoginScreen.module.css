@@ -1,27 +1,22 @@
-/* Login — Figma frame 179:44.
+/* Login — Figma frame 179:44, recomposed at 390x700.
  *
- * That frame is FLATTENED in Figma: it has no child layer tree, so MCP returns
- * no geometry for it. Every position below comes from measurements taken off
- * the native 390x844 render, and is expressed in `cqw` (percent of the shell's
- * width) so the whole composition scales proportionally on other widths.
+ * The frame is no longer flattened: the headline, subtitle and form are in
+ * NORMAL FLOW inside a flex column (node 179:54 — gap 40, padding 96/16/40),
+ * and only the three fate objects are absolute. They now FRAME the form —
+ * coin above it, wheel and dice below — where they used to sit above and
+ * below in two stacked zones.
  *
- *   value_in_cqw = px_at_390 / 390 * 100
+ * Figma's y includes a 44px status bar drawn at opacity 0. We do not render a
+ * fake status bar; that space is the real safe-area inset, 0 on desktop. So
+ * every TOP-anchored offset is rebased by -44, exactly as on every other
+ * screen, and bottom-anchored offsets are unchanged because both frames share
+ * a bottom edge. The slack this creates lands between the form and the wheel,
+ * which is where spare height should go.
+ *
+ * Horizontal geometry is in `cqw` (percent of the column width) so the
+ * composition scales with width:  value_in_cqw = px_at_390 / 390 * 100
  */
 
-/* THREE ZONES, not one canvas.
- *
- * The composition used to be a single absolutely-positioned block with
- * `aspect-ratio: 390/844`, so its height was a function of its WIDTH alone. On
- * a real browser viewport — 390 wide but only ~700, 553 or 460 tall — that made
- * the block taller than the screen and pushed the email field and Get Started
- * below the fold, behind a scroll.
- *
- * Now the two decorative stages are flexible and the content block is fixed, so
- * height comes off the decoration and never off the form. Measured against the
- * 390x844 render, the zones are stage 0-275, content 275-570, dice 570-844 —
- * the two stages are 275 and 274, so an equal `flex: 1 1 0` split reproduces
- * the reference to within half a pixel.
- */
 .canvas {
   container-type: inline-size;
   position: relative;
@@ -32,33 +27,56 @@
   overflow: hidden;
 }
 
-/* -- Decorative stages (aria-hidden, non-interactive) -------------------- */
-
-/* `container-type: size` publishes each stage's own height as cqh, which is
-   what lets the illustrations shrink with the space rather than overlapping the
-   headline. cqw still resolves to the full canvas width, so their horizontal
-   geometry is untouched. */
-.stage,
-.diceStage {
-  container-type: size;
+/* Node 179:54. Flow content only; the decorations live in .stage behind it. */
+.body {
   position: relative;
-  flex: 1 1 0;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
   width: 100%;
   min-height: 0;
+  padding-block: 96px var(--spacing-4xl);
+  padding-inline: var(--layout-gutter);
+}
+
+/* -- Decorative layer (aria-hidden, non-interactive) --------------------- */
+
+/* Behind the content, so on a viewport too short to hold the frame's spacing
+   the objects pass behind the headline and form rather than over them. */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
-/* Positions are a percentage of the STAGE height, so the composition keeps its
-   proportions as the stage shrinks; sizes are capped by cqh as well as cqw, so
-   the art shrinks with the zone instead of spilling out of it.
-   164x164 at (8, 58) on the 390x844 render; 58/275 = 21.09%, 164/275 = 59.6. */
+/* Node 179:195 — 52x52 at (247, 70); rebased to 26 from the top. */
+.coin {
+  position: absolute;
+  left: 63.3333cqw;
+  top: 26px;
+  width: 13.3333cqw;
+  aspect-ratio: 1;
+  border: 0.3462cqw solid var(--color-border-default);
+  border-radius: 50%;
+  box-shadow: 0.4615cqw 0.4615cqw 0 var(--color-border-default);
+  overflow: hidden;
+}
+
+/* Node 179:148 — the reported 135.963 box is the ROTATED frame of a 109.72
+   circle, so the box misleads and the circle is what to place: diameter
+   109.72 centred at (315, 577), i.e. 68.14 up from the frame's bottom edge.
+   Bottom-anchored, so no rebase applies. */
 .wheel {
   position: absolute;
-  left: 2.0513cqw;
-  top: 21.09%;
-  width: min(42.0513cqw, 59.6cqh);
+  left: 66.7028cqw;
+  bottom: 68.14px;
+  width: 28.1333cqw;
   aspect-ratio: 1;
-  pointer-events: none;
 }
 
 .wheel svg {
@@ -66,85 +84,61 @@
   height: 100%;
 }
 
-/* Node 179:195 — a COIN. 80x80 at (265, 161); 161/275 = 58.5%, 80/275 = 29.1. */
-.coin {
+/* Node 179:64 — the 225x171.58 pair box, flush with the frame's bottom edge
+   and its left edge. Bottom-anchored, so no rebase. */
+.diceGroup {
   position: absolute;
-  left: 67.9487cqw;
-  top: 58.5%;
-  width: min(20.5128cqw, 29.1cqh);
-  aspect-ratio: 1;
-  border: 0.3462cqw solid var(--color-border-default);
-  border-radius: 50%;
-  box-shadow: 0.4615cqw 0.4615cqw 0 var(--color-border-default);
-  overflow: hidden;
-  pointer-events: none;
+  left: 0;
+  bottom: 0;
+  width: 57.6923cqw;
+  aspect-ratio: 225 / 171.58;
 }
 
-/* 185x140.7, centred, top 695 on the reference — 125px into a 274px stage
-   (45.6%), and 140.7/274 = 51.35cqh tall. The width cap that produces that
-   height is 51.35 * (185/140.7) = 67.5cqh. */
-.dice {
+.diceGroup > * {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 45.6%;
-  width: min(47.4359cqw, 67.5cqh);
-  pointer-events: none;
 }
 
-.dice svg {
+.diceGroup svg {
   width: 100%;
   height: 100%;
 }
 
-/* Pair geometry preserved from the exported dice group (259x197 box). The two
-   dice are absolutely placed INSIDE this box — the wrapper itself stays in
-   flow so the aspect-ratio actually resolves. */
-.diceInner {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 259 / 197;
-}
-
-.diceInner > * {
-  position: absolute;
-}
-
+/* Node 179:103 — x 109..173, y 40.81..109.19 inside the pair box. */
 .diceAmber {
-  left: 48.41%;
-  top: 23.81%;
-  width: 34.04%;
-  height: 47.68%;
+  left: 48.4444%;
+  top: 23.7860%;
+  width: 28.4444%;
+  height: 39.8532%;
 }
 
+/* Node 179:143 — x 32..96, y 63.92..133.07 inside the pair box. */
 .diceTerracotta {
-  left: 14.27%;
-  top: 37.45%;
-  width: 34.03%;
-  height: 48.22%;
+  left: 14.2222%;
+  top: 37.2537%;
+  width: 28.4444%;
+  height: 40.3007%;
 }
 
-/* -- Content ------------------------------------------------------------ */
+/* -- Content ------------------------------------------------------------- */
 
-/* The fixed zone. Never shrinks and never scrolls away — the whole point of the
-   restructure is that the field and its CTA stay put while the decoration
-   yields. Gaps reproduce the reference spacing: headline 275, subtitle 343
-   (17.4 after a 50.6-tall headline), form 428 (37 after a 48-tall subtitle). */
-.content {
-  position: relative;
-  flex: 0 0 auto;
+/* Node 179:55: gap 16, centred. */
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
   width: 100%;
+  text-align: center;
 }
 
+/* 40px at 390 (node 179:56). Held at 40 wherever the column is 390 or wider,
+   and scaled below that so it can never wrap to a second line — wrapping would
+   push the form down and break the composition. */
 .headline {
-  width: 100%;
-  /* ~44px at 390. Scales with width so it can never wrap to two lines. */
   font-family: var(--type-h1-family);
   font-weight: var(--type-h1-weight);
-  font-size: 11.2821cqw;
+  font-size: min(40px, 10.2564cqw);
   line-height: 1.15;
   color: var(--color-text-heading);
-  text-align: center;
   white-space: nowrap;
 }
 
@@ -152,51 +146,39 @@
   color: var(--color-accent-primary);
 }
 
+/* Node 179:57 — DM Sans Medium 18, secondary ink, two lines. */
 .subtitle {
   width: 100%;
-  margin-top: 17.4px;
-  padding-inline: var(--layout-gutter);
   font-family: var(--type-body-family);
   font-weight: var(--type-body-weight);
-  font-size: var(--type-body-size);
-  line-height: var(--type-body-line);
+  font-size: 18px;
+  line-height: normal;
   color: var(--color-text-secondary);
-  text-align: center;
 }
 
+/* Node 179:58: gap 16. */
 .form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
   width: 100%;
-  margin-top: 37px;
-  padding-inline: var(--layout-gutter);
 }
 
-/* EMAIL label sits at x=20 — 4px inside the 16px gutter. */
-.label {
-  padding-inline-start: 4px;
+/* Node 181:197 — 358x92: label 354x22, gap 8, input 354x62, with 2px of
+   inline padding. The input's own 2px border lives INSIDE that inset, the
+   same border-box gutter rule the sheets follow. */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding-inline: var(--spacing-2xs);
 }
 
-/* 8px between the EMAIL label and the field. The hard shadow sits outside the
-   box and is not part of the gap, so nothing is compensated for it. */
-.field {
-  margin-top: var(--spacing-md);
-}
-
-/* The field is 52 tall here, shorter than the shared 56px control, so the
-   inherited vertical padding is replaced by an explicit height. */
-/* 52px at 390, but never below the 44px minimum tap target on a narrow phone. */
+/* Node 181:203 — 62 tall, not the shared control's 56. */
 .field input {
   min-height: 0;
-  height: max(44px, 13.3333cqw);
-  padding-block: 0;
-}
-
-/* 16px between the field and the Get Started button. */
-.submit {
-  margin-top: var(--spacing-xl);
-}
-
-.submit button {
-  min-height: max(44px, 13.8462cqw); /* 54px at 390, floored at the tap target */
+  height: 62px;
   padding-block: 0;
 }
 
@@ -226,10 +208,13 @@
    act; outside it, its keyframes hold the settled pose, so nothing is ever
    caught mid-spin, mid-air or mid-flip while another act plays.
 
-   THE EXPORTED TIMING IS CORRUPT — every track crams its keyframes into
-   `times` 0.9993-1.0 and the coin's background track runs past 1.0 (to 3.5).
-   The exported MP4 inherits it: only the wheel visibly moves. So the VALUE
-   SEQUENCES are the choreography and the schedule is set here by hand.
+   THE EXPORTED TIMING IS STILL CORRUPT — every `times` array is crammed into
+   0.9993-1.0 and the coin's background track runs to 3.5, with the whole
+   cohort reported as 2000ms. The VALUE SEQUENCES are the choreography; the
+   schedule below is distributed by hand and the reported duration ignored.
+
+   The throw peaks and bounce heights are the file's own numbers, used
+   verbatim and NOT scaled to the smaller corner dice.
 
    Only transform and opacity animate, so the loop stays on the compositor.
    ========================================================================== */
@@ -245,31 +230,37 @@
   28.986%, 100% { transform: rotate(1096.191deg); }
 }
 
-/* Act 2 — dice 3 (179:103): anticipation, throw, two decaying bounces. */
+/* Act 2 — dice 3 (179:103). File values: y peak -113.112, bounces -21.752 and
+   -5.221; x 21.752 / 15.662 / 13.051; rotate 0 -> 200 -> 340 -> 355 -> 360. */
 @keyframes login-die-a {
   0%, 33.333% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
-  35.072% { transform: translate(2px, 5px) rotate(14deg) scale(0.92, 1.1); }
-  43.768% { transform: translate(25px, -130px) rotate(200deg) scale(1, 1); }
-  49.565% { transform: translate(20px, 0) rotate(340deg) scale(1.15, 0.82); }
-  53.623% { transform: translate(18px, -25px) rotate(352deg) scale(1, 1); }
-  57.101% { transform: translate(16px, 0) rotate(357deg) scale(1.05, 0.93); }
-  59.71% { transform: translate(15px, -6px) rotate(359deg) scale(1, 1); }
+  35.072% { transform: translate(0, 4.35px) rotate(0deg) scale(0.92, 1.1); }
+  43.768% { transform: translate(21.752px, -113.112px) rotate(200deg) scale(1, 1); }
+  49.565% { transform: translate(15.662px, 0) rotate(340deg) scale(1.15, 0.82); }
+  53.623% { transform: translate(13.051px, -21.752px) rotate(355deg) scale(1, 1); }
+  57.101% { transform: translate(13.051px, 0) rotate(357deg) scale(1.05, 0.93); }
+  59.71% { transform: translate(13.051px, -5.221px) rotate(359deg) scale(1, 1); }
   62.319%, 100% { transform: translate(0, 0) rotate(360deg) scale(1, 1); }
 }
 
-/* Act 2 — dice 4 (179:143): the mirrored second die, thrown higher. */
+/* Act 2 — dice 4 (179:143). File values: y peak -130.513, bounces -26.103 and
+   -6.961; x -17.402 / -12.181 / -8.701.
+   The file's rotate track ENDS at -340, which would leave the die 20deg off
+   its start and snap on the loop wrap; it is carried to -360 so the loop is
+   seamless. That is the one motion value not taken verbatim. */
 @keyframes login-die-b {
   0%, 33.333% { transform: translate(0, 0) rotate(0deg) scale(1, 1); }
-  35.072% { transform: translate(-2px, 4px) rotate(-12deg) scale(0.9, 1.12); }
-  43.768% { transform: translate(-20px, -150px) rotate(-180deg) scale(1, 1); }
-  49.565% { transform: translate(-16px, 0) rotate(-310deg) scale(1.12, 0.84); }
-  53.623% { transform: translate(-14px, -30px) rotate(-328deg) scale(1, 1); }
-  57.101% { transform: translate(-12px, 0) rotate(-338deg) scale(1.04, 0.94); }
-  59.71% { transform: translate(-10px, -8px) rotate(-352deg) scale(1, 1); }
+  35.072% { transform: translate(0, 3.48px) rotate(0deg) scale(0.9, 1.12); }
+  43.768% { transform: translate(-17.402px, -130.513px) rotate(-180deg) scale(1, 1); }
+  49.565% { transform: translate(-12.181px, 0) rotate(-310deg) scale(1.12, 0.84); }
+  53.623% { transform: translate(-8.701px, -26.103px) rotate(-330deg) scale(1, 1); }
+  57.101% { transform: translate(-8.701px, 0) rotate(-340deg) scale(1.04, 0.94); }
+  59.71% { transform: translate(-8.701px, -6.961px) rotate(-350deg) scale(1, 1); }
   62.319%, 100% { transform: translate(0, 0) rotate(-360deg) scale(1, 1); }
 }
 
-/* Act 3 — coin (179:195): jumps and flips six times on the way. */
+/* Act 3 — coin (179:195): jumps and flips six times on the way. File y track
+   peaks at -100 with a -12 settle bounce. */
 @keyframes login-coin {
   0%, 66.667% { transform: translateY(0) scaleY(1); }
   68.696% { transform: translateY(-40px) scaleY(0); }

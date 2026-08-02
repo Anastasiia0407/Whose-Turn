@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { AppShell, Button, TextField } from '../ui'
-import { SectionLabel } from '../ui'
+import { AppShell, Button, SectionLabel, TextField } from '../ui'
 import { useHousehold } from '../state'
 import wheelSvg from '../assets/illustrations/wheel.svg?raw'
 import diceAmberSvg from '../assets/illustrations/die-amber.svg?raw'
@@ -8,12 +7,11 @@ import diceTerracottaSvg from '../assets/illustrations/die-terracotta.svg?raw'
 import styles from './LoginScreen.module.css'
 
 /**
- * Login — Figma frame 179:44.
+ * Login — Figma frame 179:44, recomposed at 390x700.
  *
- * The frame is flattened in Figma (no child layers), so its geometry could not
- * be read through MCP. Positions come from measurements off the native 390x844
- * render and are laid out on a proportionally-scaling reference canvas — see
- * LoginScreen.module.css.
+ * The three fate objects now FRAME the form: the coin small and above it, the
+ * wheel bottom-right and the dice bottom-left. They sit in a decorative layer
+ * behind the content; the headline, subtitle and form are in normal flow.
  *
  * Email is an identifier, not a credential: nothing is sent, nothing verified.
  */
@@ -36,92 +34,84 @@ export function LoginScreen() {
   return (
     <AppShell bleed>
       <div className={styles.canvas}>
-        {/* Three zones, top to bottom: a flexible decorative stage, the fixed
-            content block, and a flexible dice stage. At 390x844 they resolve to
-            exactly the Figma geometry (stage 0-275, content 275-570, dice
-            570-844); on a shorter viewport the two stages give up their height
-            and the content block — headline, field and CTA — never moves off
-            screen. It used to be one absolutely-positioned canvas sized purely
-            by WIDTH, which is why a short viewport pushed the CTA below the
-            fold. */}
+        {/* Decorative — real vectors exported from Figma, not redrawn. */}
         <div className={styles.stage} aria-hidden="true">
-          {/* Decorative — real vectors exported from Figma, not redrawn. */}
-          <div
-            className={styles.wheel}
-            dangerouslySetInnerHTML={{ __html: wheelSvg }}
-          />
-          {/* Node 179:195 is a COIN, not a ball. Two stacked faces so the flip
-              swaps colour via opacity rather than repainting a background. */}
+          {/* Node 179:195 is a COIN. Two stacked faces so the flip swaps
+              colour via opacity rather than repainting a background. */}
           <div className={styles.coin}>
             <div className={`${styles.coinFace} ${styles.coinFaceA}`} />
             <div className={`${styles.coinFace} ${styles.coinFaceB}`} />
           </div>
-        </div>
 
-        <div className={styles.content}>
-          <h1 className={styles.headline}>
-            Whose <span className={styles.headlineAccent}>Turn?</span>
-          </h1>
+          <div
+            className={styles.wheel}
+            dangerouslySetInnerHTML={{ __html: wheelSvg }}
+          />
 
-          <p className={styles.subtitle}>
-            Set up your household and
-            <br />
-            let fate assign the chores
-          </p>
-
-          <form className={styles.form} onSubmit={onSubmit} noValidate>
-          <SectionLabel className={styles.label}>Email</SectionLabel>
-          <div className={styles.field}>
-            <TextField
-              label="Email"
-              hideLabel
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value)
-                if (error) clearError()
-              }}
-              onBlur={() => setTouched(true)}
-              invalid={showInvalid}
-              message={
-                showInvalid
-                  ? 'Enter an email address like you@example.com.'
-                  : undefined
-              }
-              disabled={busy}
+          <div className={styles.diceGroup}>
+            <div
+              className={styles.diceAmber}
+              dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
+            />
+            <div
+              className={styles.diceTerracotta}
+              dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
             />
           </div>
+        </div>
 
-          <div className={styles.submit}>
+        <div className={styles.body}>
+          <div className={styles.titles}>
+            <h1 className={styles.headline}>
+              Whose <span className={styles.headlineAccent}>Turn?</span>
+            </h1>
+            <p className={styles.subtitle}>
+              Set up your household and
+              <br />
+              let fate assign the chores
+            </p>
+          </div>
+
+          <form className={styles.form} onSubmit={onSubmit} noValidate>
+            <div className={styles.fieldGroup}>
+              <SectionLabel>Email</SectionLabel>
+              <div className={styles.field}>
+                <TextField
+                  label="Email"
+                  hideLabel
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="Enter email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (error) clearError()
+                  }}
+                  onBlur={() => setTouched(true)}
+                  invalid={showInvalid}
+                  message={
+                    showInvalid
+                      ? 'Enter an email address like you@example.com.'
+                      : undefined
+                  }
+                  disabled={busy}
+                />
+              </div>
+            </div>
+
+            {/* Node 179:61 is drawn at 50% opacity — that is this button's
+                existing disabled state with an empty field, not a new style. */}
             <Button type="submit" variant="primary" disabled={!isValid || busy}>
               Get Started
             </Button>
-          </div>
 
-          {error ? (
+            {error ? (
               <p className={styles.error} role="alert">
                 {error}
               </p>
             ) : null}
           </form>
-        </div>
-
-        <div className={styles.diceStage} aria-hidden="true">
-          <div className={styles.dice}>
-            <div className={styles.diceInner}>
-              <div
-                className={styles.diceAmber}
-                dangerouslySetInnerHTML={{ __html: diceAmberSvg }}
-              />
-              <div
-                className={styles.diceTerracotta}
-                dangerouslySetInnerHTML={{ __html: diceTerracottaSvg }}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </AppShell>
