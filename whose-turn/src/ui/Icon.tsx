@@ -18,6 +18,8 @@ export type IconName =
   | 'x'
   | 'trash'
   | 'members'
+  | 'bell'
+  | 'bell-off'
 
 type IconProps = {
   name: IconName
@@ -34,6 +36,8 @@ const VIEW_BOX: Record<IconName, string> = {
   x: '0 0 24 24',
   trash: '0 0 24 24',
   members: '0 0 20 20',
+  bell: '0 0 24 24',
+  'bell-off': '0 0 24 24',
 }
 
 const PATHS: Record<IconName, React.ReactNode> = {
@@ -99,6 +103,29 @@ const PATHS: Record<IconName, React.ReactNode> = {
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  ),
+  // bell-02 (node 251:65). Natural art 18x20, centred in the 24 box.
+  bell: (
+    <g transform="translate(3 2)">
+      <path
+        d="M6.33302 18.0909C7.0407 18.6562 7.97522 19 8.99969 19C10.0242 19 10.9587 18.6562 11.6664 18.0909M1.50732 15.1818C1.08571 15.1818 0.850229 14.5194 1.10526 14.1514C1.69705 13.2975 2.26824 12.0451 2.26824 10.537L2.29265 8.35166C2.29265 4.29145 5.2955 1 8.99969 1C12.7584 1 15.8055 4.33993 15.8055 8.45995L15.7811 10.537C15.7811 12.0555 16.3326 13.3147 16.9003 14.169C17.1455 14.5379 16.9094 15.1818 16.493 15.1818H1.50732Z"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+  ),
+  // bell-off-01 (node 251:149). Same 18x20 art plus the strike-through.
+  'bell-off': (
+    <g transform="translate(3 2)">
+      <path
+        d="M16.9997 14.3112C16.4284 13.482 15.8734 12.2598 15.8734 10.786L15.898 8.77002C15.898 4.77119 12.8319 1.52949 9.04964 1.52949C8.64275 1.52949 8.24427 1.56755 7.85722 1.64051M6.36631 18.1177C7.07841 18.6664 8.01877 19.0001 9.04964 19.0001C10.0805 19.0001 11.0209 18.6664 11.733 18.1177M12.8063 15.2942H1.51046C1.08621 15.2942 0.84926 14.6513 1.10589 14.2941C1.70137 13.4653 2.27613 12.2498 2.27613 10.786L2.30069 8.66492C2.30069 6.96423 2.86345 5.40252 3.80282 4.17656M14.953 17.9414L2.60965 1.00007"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    </g>
   ),
 }
 

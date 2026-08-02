@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { BottomSheet, Button, MemberAvatar, StaticRow, TextField } from '../ui'
 import { useBlockInsets } from '../ui/useBlockInsets'
+import { useMuted } from '../ui/useMuted'
 import { SwipeRow } from './SwipeRow'
 import type { Member } from '../data'
 import styles from './Sheets.module.css'
@@ -45,6 +46,7 @@ export function MembersSheet({
   // Same hook home uses. Only the bottom slot is needed; BottomSheet measures
   // its own top block and publishes it as --sheet-top-block.
   const { insets, bottomRef } = useBlockInsets()
+  const [muted, setMuted] = useMuted()
 
   const trimmed = name.trim()
   const canSubmit = trimmed.length > 0 && !busy
@@ -57,7 +59,24 @@ export function MembersSheet({
   }
 
   return (
-    <BottomSheet open={open} onClose={onClose} title="Members" framed>
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title="Members"
+      framed
+      headerAction={
+        /* Nodes 251:65 (bell-02) / 251:149 (bell-off-01). Same button
+           treatment as the close control — not a new style. */
+        <Button
+          variant="icon"
+          tone="canvas"
+          leadingIcon={muted ? 'bell-off' : 'bell'}
+          aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+          aria-pressed={muted}
+          onClick={() => setMuted(!muted)}
+        />
+      }
+    >
       {/* The scroller spans the whole sheet body; the handle/header block above
           it and the form below it are both opaque and pinned, so member rows
           pass behind them rather than stopping at their edge. */}

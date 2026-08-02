@@ -61,11 +61,76 @@ let handoffTimer: ReturnType<typeof setTimeout> | null = null
 let applause: HTMLAudioElement | null = null
 let applauseFade: ReturnType<typeof setInterval> | null = null
 
+/**
+ * Mute preference.
+ *
+ * Stored in localStorage, NOT in Supabase: this is per-person and per-device.
+ * On the household it would let one member silence the app for everyone.
+ *
+ * Read once at module load, so it is already in effect before any component
+ * mounts and before any sound can play. Nothing outside this module touches
+ * the key — components go through `isMuted` / `setMuted`.
+ */
+const MUTED_KEY = 'whose-turn:muted'
+
+function readMuted(): boolean {
+  try {
+    return window.localStorage.getItem(MUTED_KEY) === 'true'
+  } catch (error) {
+    // Private mode or a blocked store — default to sound on.
+    swallow('mute preference read', error)
+    return false
+  }
+}
+
+let muted = typeof window !== 'undefined' ? readMuted() : false
+
+const listeners = new Set<(value: boolean) => void>()
+
+/** Current mute state. Independent of prefers-reduced-motion. */
+export function isMuted(): boolean {
+  return muted
+}
+
+/** Subscribe to changes; returns an unsubscribe. */
+export function onMutedChange(fn: (value: boolean) => void): () => void {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+
+/**
+ * Mute or unmute every sound in the app.
+ *
+ * Muting silences whatever is playing with the same fade used everywhere else
+ * rather than cutting it. Unmuting starts nothing — the next sound just plays.
+ */
+export function setMuted(value: boolean): void {
+  if (muted === value) return
+  muted = value
+  try {
+    window.localStorage.setItem(MUTED_KEY, String(value))
+  } catch (error) {
+    swallow('mute preference write', error)
+  }
+  if (value) {
+    // Fade, do not cut — and cancelling the pending handoff stops the applause
+    // firing into the silence a moment later.
+    fadeOutDrawSound()
+    stopApplause()
+  }
+  listeners.forEach((fn) => fn(value))
+}
+
 function reducedMotion(): boolean {
   return (
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
+}
+
+/** Sound is off when the user muted it, or when reduced motion is set. */
+function silent(): boolean {
+  return muted || reducedMotion()
 }
 
 /** Never let an audio failure surface to the user. One debug line, no more. */
@@ -136,7 +201,7 @@ function fadeOut(
  * late over the network. Safe to call repeatedly.
  */
 export function preload(name: SoundName): void {
-  if (reducedMotion()) return
+  if (silent()) return
   const audio = element(name)
   try {
     audio?.load()
@@ -188,6 +253,31 @@ export function stop(): void {
 }
 
 /**
+ * Silence the draw channel with a fade instead of a cut. Used when muting
+ * mid-sound, where an abrupt stop would be more jarring than the sound itself.
+ */
+function fadeOutDrawSound(): void {
+  if (handoffTimer !== null) {
+    clearTimeout(handoffTimer)
+    handoffTimer = null
+  }
+  const outgoing = current
+  if (!outgoing || outgoing.paused) {
+    stopDrawSound()
+    return
+  }
+  if (drawEnd !== null) {
+    clearTimeout(drawEnd)
+    drawEnd = null
+  }
+  if (drawFade !== null) {
+    clearInterval(drawFade)
+    drawFade = null
+  }
+  drawFade = fadeOut(outgoing, FADE_MS, stopDrawSound)
+}
+
+/**
  * Start the applause, or leave it alone if it is already carrying across the
  * transition. The result screen calls this on mount, which is normally a
  * no-op: by then the lead-in has been playing for APPLAUSE_LEAD_IN_MS. It only
@@ -195,7 +285,7 @@ export function stop(): void {
  * buffered in time for the lead-in.
  */
 export function startApplause(): void {
-  if (reducedMotion()) return
+  if (silent()) return
 
   if (applause && !applause.paused) {
     // Already running. Cancel any fade a teardown may have begun (React
@@ -324,7 +414,7 @@ type PlayOptions = {
  * Returns immediately; playback failures are swallowed.
  */
 export function play(name: SoundName, options: PlayOptions = {}): void {
-  if (reducedMotion()) return
+  if (silent()) return
 
   stop()
 
@@ -375,5 +465,5 @@ export function play(name: SoundName, options: PlayOptions = {}): void {
 
 /** True when sound is suppressed, so callers can skip preloading too. */
 export function soundDisabled(): boolean {
-  return reducedMotion()
+  return silent()
 }

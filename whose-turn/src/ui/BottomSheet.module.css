@@ -136,7 +136,22 @@
   padding-inline-start: var(--spacing-inline);
 }
 
+/* Node 251:147 — 104x44 at the header's right edge, two 44s with a 16 gap.
+   Never shrinks, so the title truncates before the buttons do. */
+.headerActions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+/* Shrinks and truncates before the button group does, so a long title can
+   never push the controls off the header at a narrow width. */
 .title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-family: var(--type-body-bold-family);
   font-weight: var(--type-body-bold-weight);
   font-size: var(--type-sheet-title-size);

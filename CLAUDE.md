@@ -118,6 +118,18 @@ Deriving from `sort_order` or array position at render time is the bug this rule
 
 The palette must scale with household size: a household of 2 uses the first two colours, a household of 5 the first five.
 
+## Sound rule
+
+Sound is **muteable from one place only** — the toggle in the members sheet header (nodes 251:65 bell-02 / 251:149 bell-off-01). Do not add a second toggle elsewhere; the design puts it there and nowhere else.
+
+**The preference lives in `localStorage`, never in Supabase.** It is per-person and per-device: writing it to the household would let one member silence the app for everyone else. The key is read once at module load in `audio/player.ts`, so it is already in effect before any component mounts and before any sound can play.
+
+`audio/player.ts` owns both the playback and the preference. **No component touches an Audio object, and no component reads the storage key** — they go through `useMuted`, which is a subscription over the helper's state.
+
+Muting mid-sound fades over the same 200ms used everywhere else rather than cutting. Unmuting starts nothing; the next sound simply plays.
+
+The mute setting is **independent of `prefers-reduced-motion`**, which already suppresses sound on its own. With reduced motion on, the toggle still works and still shows its state — it just has nothing to unmute.
+
 ## Fate-engine rule
 
 **The winner is drawn first**, by a single uniform random function, before any pixel moves. Every animation is then solved backwards to land on that already-decided winner:

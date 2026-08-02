@@ -24,6 +24,11 @@ type BottomSheetProps = {
    * the content to pad against.
    */
   framed?: boolean
+  /**
+   * Extra control rendered immediately left of the close button, inside the
+   * header's button group. Only the members sheet uses one (node 251:147).
+   */
+  headerAction?: ReactNode
   children: ReactNode
 }
 
@@ -41,6 +46,7 @@ export function BottomSheet({
   title,
   accentTitle,
   framed = false,
+  headerAction,
   children,
 }: BottomSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null)
@@ -147,13 +153,19 @@ export function BottomSheet({
                 <span className={styles.titleAccent}>{accentTitle}</span>
               ) : null}
             </h2>
-            <Button
-              variant="icon"
-              tone="canvas"
-              leadingIcon="x"
-              aria-label={`Close ${title}${accentTitle ?? ''}`}
-              onClick={onClose}
-            />
+            {/* Node 251:147 — a 104x44 group flush with the header's right
+                edge: the optional action at x=0 and the close button at x=60,
+                i.e. two 44s with a 16 gap. */}
+            <div className={styles.headerActions}>
+              {headerAction}
+              <Button
+                variant="icon"
+                tone="canvas"
+                leadingIcon="x"
+                aria-label={`Close ${title}${accentTitle ?? ''}`}
+                onClick={onClose}
+              />
+            </div>
           </div>
         </div>
 
