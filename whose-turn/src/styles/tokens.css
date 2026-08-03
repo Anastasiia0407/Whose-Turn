@@ -73,8 +73,22 @@
     var(--color-border-default);
 
   /* -- Typography: families ------------------------------------------ */
-  --font-display: 'Corben', Georgia, 'Times New Roman', serif;
-  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  /* Podkova sits directly after the brand face in BOTH stacks, so it is the
+     Cyrillic fallback everywhere user-entered text renders — and only there,
+     since the interface copy is English. The browser resolves per character,
+     so Latin never leaves Corben / DM Sans. Georgia and system-ui stay behind
+     it as the last resort if Podkova itself fails to load; both cover Cyrillic.
+     DM Sans has no Cyrillic subset at all (Google ships latin + latin-ext
+     only), which is why it needs the same fallback rather than an added
+     subset.
+
+     The Podkova face is cap-height and line-box matched to Corben Bold in
+     fonts.css, and pinned to weight 800 so an element asking for 700 gets
+     Podkova's heaviest. Even so its stem is ~22% of cap against Corben's ~42%:
+     Podkova cannot reach Corben's weight, so Cyrillic still reads a little
+     lighter. Closing that needs a heavier Cyrillic face, not a CSS value. */
+  --font-display: 'Corben', 'Podkova', Georgia, 'Times New Roman', serif;
+  --font-body: 'DM Sans', 'Podkova', system-ui, -apple-system, sans-serif;
 
   /* -- Typography: Figma text styles --------------------------------- */
   /* Heading/H1 — Corben Bold 30/40 */

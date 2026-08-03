@@ -1,5 +1,17 @@
 /* Self-hosted so the brand face never falls back mid-load and no third-party
-   request is needed. Files downloaded from Google Fonts (Corben v23, DM Sans v17). */
+   request is needed. Files downloaded from Google Fonts (Corben v23,
+   DM Sans v17, Podkova v33).
+
+   CYRILLIC — for user-entered text only. The interface copy is English by
+   design and stays that way; this is a font fallback, not localisation.
+
+   Corben has no Cyrillic glyphs, so a chore named "Помити посуд" fell through
+   to Georgia/Times. Podkova is added AFTER Corben in the stack, and each face
+   below declares the `unicode-range` it covers, so the browser swaps per
+   CHARACTER: Latin keeps rendering in Corben exactly as designed, and the
+   Cyrillic files are only fetched when Cyrillic actually renders. Splitting by
+   unicode-range is what makes that conditional — a merged file would download
+   for everyone. */
 
 @font-face {
   font-family: 'Corben';
@@ -21,6 +33,63 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
     U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
     U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Podkova — Cyrillic only, and metric-matched to Corben Bold.
+ *
+ * The Latin subsets are deliberately NOT loaded: Corben covers Latin and comes
+ * first in the stack, so Latin Podkova would be dead weight that never renders.
+ * The unicode-range below cannot claim a Latin glyph.
+ *
+ * All four adjustments below were MEASURED on a canvas at 100px, not guessed:
+ *
+ *   cap-height   Corben 'H' 77.783   Podkova 'Н' 58.9   ratio 1.3206
+ *   -> size-adjust: 132.06%          (cap now 77.78 on both, exact)
+ *
+ *   The metric overrides are themselves SCALED by size-adjust — verified:
+ *   ascent-override: 138% produced a used ascent of 182 (138 x 1.3206), not
+ *   138. So each override is Corben's metric DIVIDED by the ratio:
+ *
+ *   ascent    Corben 138%  ->  138 / 1.3206 = 104.5%
+ *   descent   Corben  47%  ->   47 / 1.3206 =  35.59%
+ *   line gap  0
+ *
+ *   Result: ascent 138, descent 47, cap 77.78 on both faces, so a Cyrillic row
+ *   occupies exactly the same line box as a Latin one and the 72px pitch holds.
+ *
+ * Weight is 800, the top of Podkova's variable range, chosen by measuring stem
+ * width as a percentage of cap height rather than by eye. It is the closest
+ * available match but NOT an equal one — see the note in tokens.css.
+ *
+ * size-adjust and the metric overrides are ignored by older Safari, which then
+ * renders as it did before. That degradation is accepted; there is no JS
+ * fallback for it.
+ */
+@font-face {
+  font-family: 'Podkova';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../assets/fonts/podkova-var-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-04FF, U+0500-052F, U+2DE0-2DFF, U+A640-A69F;
+  size-adjust: 132.06%;
+  ascent-override: 104.5%;
+  descent-override: 35.59%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Podkova';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('../assets/fonts/podkova-var-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F,
+    U+FE2E-FE2F;
+  size-adjust: 132.06%;
+  ascent-override: 104.5%;
+  descent-override: 35.59%;
+  line-gap-override: 0%;
 }
 
 @font-face {
