@@ -20,11 +20,56 @@
     <!-- Home-screen label. Without this iOS derives it from <title>. -->
     <meta name="apple-mobile-web-app-title" content="Whose Turn?" />
     <meta name="application-name" content="Whose Turn?" />
+
+    <!-- ===================================================================
+         SEARCH RESULTS
+         What Google actually renders for an ordinary page is the favicon, the
+         title and this description — NOT og:image. Those three are set above
+         and here; the social card below is a separate surface.
+         =================================================================== -->
+    <title>Whose Turn?</title>
     <meta
       name="description"
-      content="Whose Turn? — settle chore disputes fairly. Pick a chore, pick a fate mode, let the draw decide."
+      content="Settle chore disputes fairly: set up your household once, pick the chore nobody wants, and let a spin, a dice roll or a coin toss decide whose turn it is."
     />
-    <title>Whose Turn?</title>
+
+    <!-- ===================================================================
+         LINK PREVIEW CARD
+         The origin in the URLs below is substituted by Vite at build time from
+         VITE_SITE_ORIGIN in .env. Crawlers reject relative image paths, so
+         these have to be absolute — and holding the host in one variable means
+         a domain change is one edit rather than four.
+         (Do not write the placeholder token itself in a comment: Vite happily
+         substitutes it here too, and the comment stops making sense.)
+         =================================================================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Whose Turn?" />
+    <meta property="og:title" content="Whose Turn?" />
+    <meta
+      property="og:description"
+      content="Settle chore disputes fairly: set up your household once, pick the chore nobody wants, and let a spin, a dice roll or a coin toss decide whose turn it is."
+    />
+    <meta property="og:url" content="%VITE_SITE_ORIGIN%/" />
+    <meta property="og:image" content="%VITE_SITE_ORIGIN%/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Whose Turn? wordmark on a cream background, framed by two dice, a fortune wheel and a coin."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Whose Turn?" />
+    <meta
+      name="twitter:description"
+      content="Settle chore disputes fairly: set up your household once, pick the chore nobody wants, and let a spin, a dice roll or a coin toss decide whose turn it is."
+    />
+    <meta name="twitter:image" content="%VITE_SITE_ORIGIN%/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="The Whose Turn? wordmark on a cream background, framed by two dice, a fortune wheel and a coin."
+    />
   </head>
   <body>
     <div id="root"></div>
