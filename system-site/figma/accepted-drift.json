@@ -1,0 +1,25 @@
+{
+  "$comment": [
+    "Differences between Figma and the code that have been LOOKED AT and DECIDED.",
+    "",
+    "An entry here makes the drift check pass for that one token, and only while the",
+    "two values stay exactly as recorded. Change either side and the check fails",
+    "again — an acceptance cannot silently cover a new difference.",
+    "",
+    "A stale entry — one whose drift no longer exists — also fails the check. The",
+    "list can only shrink by someone noticing, which is the point: an ignore-list",
+    "nobody prunes becomes an ignore-everything list.",
+    "",
+    "Every entry needs a reason and a date. 'It was like that already' is not one."
+  ],
+  "accepted": [
+    {
+      "token": "color/member/3",
+      "code": "MEMBER_PALETTE[2]",
+      "figma": "#02ab0d",
+      "codeValue": "#6b8e5a",
+      "decidedOn": "2026-08-12",
+      "reason": "Figma reuses the success green for member slot 3, which makes green mean both 'selected chore' and 'member 3' on the dice screen — the design file records the clash as a known finding of its own. The code diverged to an olive instead. The code is right; the file has not been changed to match, so this stays recorded rather than fixed."
+    }
+  ]
+}

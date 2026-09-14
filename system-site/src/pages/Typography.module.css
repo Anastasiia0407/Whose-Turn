@@ -1,0 +1,86 @@
+.specimens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+  min-width: 0;
+}
+
+.styleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-inline);
+  min-width: 0;
+}
+
+.styleHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.styleName {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.styleSpec {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-secondary);
+}
+
+.partial {
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+}
+
+.absent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+  padding: var(--spacing-2xl);
+  background: var(--color-background-surface);
+  border: var(--border-sm) dashed var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+
+.absentBadge {
+  padding: 0 var(--spacing-md);
+  background: var(--color-accent-danger);
+  color: var(--color-text-on-accent);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+}
+
+.absentBody {
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+}
+
+.headlineDemo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  background: var(--color-background-primary);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

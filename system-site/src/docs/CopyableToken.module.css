@@ -1,0 +1,56 @@
+.wrap {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+  padding: var(--spacing-2xs) var(--spacing-md);
+  border: var(--border-sm) solid transparent;
+  border-radius: var(--spacing-md);
+  text-align: left;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.button:hover {
+  background: var(--site-hover);
+  border-color: var(--site-hairline);
+}
+
+.name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-heading);
+  overflow-wrap: anywhere;
+}
+
+/* The affordance stays quiet until the row is hovered or the button focused,
+   so a page of forty tokens is not forty shouting "Copy". */
+.hint {
+  flex-shrink: 0;
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.button:hover .hint,
+.button:focus-visible .hint {
+  opacity: 1;
+}
+
+/* Once it has something to report it stays visible regardless of hover —
+   otherwise the confirmation never appears for anyone who copied by keyboard
+   and then moved the pointer away. */
+.hintActive {
+  opacity: 1;
+  color: var(--color-text-heading);
+}

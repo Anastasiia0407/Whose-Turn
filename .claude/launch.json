@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "whose-turn", "run", "dev", "--", "--host"],
       "port": 5173
+    },
+    {
+      "name": "system-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "system-site", "run", "dev", "--", "--host"],
+      "port": 5174
     }
   ]
 }

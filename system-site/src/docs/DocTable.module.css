@@ -1,0 +1,65 @@
+.wrap {
+  min-width: 0;
+}
+
+.scroller {
+  overflow-x: auto;
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-background-surface);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Below this the columns crush rather than scroll. */
+  min-width: 34rem;
+}
+
+.caption {
+  caption-side: top;
+  text-align: left;
+  padding: var(--spacing-lg) var(--spacing-2xl) 0;
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.th {
+  text-align: left;
+  vertical-align: bottom;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-bottom: var(--border-sm) solid var(--color-border-default);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.tr + .tr .td {
+  border-top: var(--border-sm) solid var(--site-hairline);
+}
+
+.td {
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  vertical-align: top;
+  color: var(--color-text-primary);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--spacing-xs);
+  background: var(--site-hover);
+  overflow-wrap: anywhere;
+}

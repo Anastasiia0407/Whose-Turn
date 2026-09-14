@@ -1,0 +1,121 @@
+{
+  "$comment": [
+    "COMMITTED SNAPSHOT of the Figma component set, page 'Components' (323:23).",
+    "Captured with figma-mcp:get_metadata and transcribed. Committed so the drift",
+    "check can run in CI without Figma access.",
+    "",
+    "`axes` are the variant properties as Figma spells them. A component that gains",
+    "an axis value here without a matching option in its .figma.tsx mapping fails",
+    "the drift check — that is the 'component gained a variant with no mapping' rule."
+  ],
+  "fileKey": "ow8Eo53KIe4QrORvA7TQ2E",
+  "capturedAt": "2026-08-12",
+  "source": "figma-mcp:get_metadata on 323:23",
+  "components": [
+    {
+      "name": "Button",
+      "nodeId": "325:42",
+      "type": "variant-set",
+      "axes": { "Appearance": ["Primary", "Secondary"], "State": ["Default", "Disabled"] },
+      "variants": [
+        { "nodeId": "325:26", "name": "Appearance=Primary, State=Default" },
+        { "nodeId": "325:31", "name": "Appearance=Primary, State=Disabled" },
+        { "nodeId": "325:36", "name": "Appearance=Secondary, State=Default" },
+        { "nodeId": "325:41", "name": "Appearance=Secondary, State=Disabled" }
+      ]
+    },
+    {
+      "name": "IconButton",
+      "nodeId": "326:49",
+      "type": "variant-set",
+      "axes": { "Tone": ["Neutral", "Accent", "Danger"] },
+      "variants": [
+        { "nodeId": "326:40", "name": "Tone=Neutral" },
+        { "nodeId": "326:44", "name": "Tone=Accent" },
+        { "nodeId": "326:48", "name": "Tone=Danger" }
+      ]
+    },
+    {
+      "name": "Avatar",
+      "nodeId": "327:34",
+      "type": "variant-set",
+      "axes": { "Size": ["Sm", "Md", "Lg"] },
+      "variants": [
+        { "nodeId": "327:27", "name": "Size=Sm" },
+        { "nodeId": "327:30", "name": "Size=Md" },
+        { "nodeId": "327:33", "name": "Size=Lg" }
+      ]
+    },
+    {
+      "name": "Icons",
+      "nodeId": "332:25",
+      "type": "group",
+      "axes": {
+        "Icon": [
+          "Icon / check",
+          "Icon / chevron-left",
+          "Icon / plus",
+          "Icon / trash",
+          "Icon / members",
+          "Icon / close",
+          "Icon / bell-off",
+          "Icon / bell"
+        ]
+      },
+      "variants": [
+        { "nodeId": "330:29", "name": "Icon / check" },
+        { "nodeId": "330:34", "name": "Icon / chevron-left" },
+        { "nodeId": "330:37", "name": "Icon / plus" },
+        { "nodeId": "330:42", "name": "Icon / trash" },
+        { "nodeId": "330:45", "name": "Icon / members" },
+        { "nodeId": "330:48", "name": "Icon / close" },
+        { "nodeId": "330:53", "name": "Icon / bell-off" },
+        { "nodeId": "330:58", "name": "Icon / bell" }
+      ]
+    },
+    {
+      "name": "TextField",
+      "nodeId": "332:32",
+      "type": "variant-set",
+      "axes": { "State": ["Placeholder", "Filled"] },
+      "variants": [
+        { "nodeId": "332:28", "name": "State=Placeholder" },
+        { "nodeId": "332:31", "name": "State=Filled" }
+      ]
+    },
+    {
+      "name": "ListRow",
+      "nodeId": "336:49",
+      "type": "variant-set",
+      "axes": { "Leading": ["None", "Avatar"], "State": ["Default", "Selected"] },
+      "variants": [
+        { "nodeId": "336:29", "name": "Leading=None, State=Default" },
+        { "nodeId": "336:34", "name": "Leading=None, State=Selected" },
+        { "nodeId": "336:41", "name": "Leading=Avatar, State=Default" },
+        { "nodeId": "336:48", "name": "Leading=Avatar, State=Selected" }
+      ]
+    },
+    {
+      "name": "Titles",
+      "nodeId": "340:54",
+      "type": "variant-set",
+      "axes": { "Gap": ["Tight", "Medium", "Loose"] },
+      "variants": [
+        { "nodeId": "340:45", "name": "Gap=Tight" },
+        { "nodeId": "340:49", "name": "Gap=Medium" },
+        { "nodeId": "340:53", "name": "Gap=Loose" }
+      ]
+    },
+    { "name": "ChoreChip", "nodeId": "337:33", "type": "component", "axes": {}, "variants": [] },
+    { "name": "MemberChip", "nodeId": "337:38", "type": "component", "axes": {}, "variants": [] },
+    { "name": "ResultBadge", "nodeId": "337:41", "type": "component", "axes": {}, "variants": [] },
+    { "name": "Scrim", "nodeId": "340:32", "type": "component", "axes": {}, "variants": [] },
+    { "name": "HomeIndicator", "nodeId": "340:35", "type": "component", "axes": {}, "variants": [] },
+    { "name": "SheetHeader", "nodeId": "340:41", "type": "component", "axes": {}, "variants": [] },
+    { "name": "ScreenHeader", "nodeId": "340:62", "type": "component", "axes": {}, "variants": [] },
+    { "name": "BottomSheet", "nodeId": "340:72", "type": "component", "axes": {}, "variants": [] },
+    { "name": "FateWheel", "nodeId": "345:69", "type": "component", "axes": {}, "variants": [] },
+    { "name": "Die", "nodeId": "345:72", "type": "component", "axes": {}, "variants": [] },
+    { "name": "CoinFace", "nodeId": "345:99", "type": "component", "axes": {}, "variants": [] }
+  ]
+}

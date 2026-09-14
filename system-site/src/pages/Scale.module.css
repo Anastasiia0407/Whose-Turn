@@ -1,0 +1,148 @@
+.scale {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.absentRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-inline);
+  padding: var(--spacing-inline) 0;
+  border-bottom: var(--border-sm) solid var(--site-hairline);
+}
+
+.absentName {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.absentBadge {
+  padding: 0 var(--spacing-md);
+  background: var(--color-accent-danger);
+  color: var(--color-text-on-accent);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.absentUse {
+  flex-basis: 100%;
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+}
+
+/* -- Shadow demonstration ------------------------------------------------- */
+
+.shadowRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4xl);
+  padding: var(--spacing-3xl) var(--spacing-2xl) var(--spacing-4xl);
+  background: var(--color-background-primary);
+  border: var(--border-sm) solid var(--site-hairline);
+  border-radius: var(--radius-md);
+}
+
+.shadowCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-inline);
+  min-width: 0;
+}
+
+.shadowBox {
+  width: calc(var(--spacing-4xl) * 3);
+  max-width: 100%;
+  height: calc(var(--spacing-4xl) * 2);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+
+.shadowSm {
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.shadowLg {
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.shadowCaption {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* -- Layout demonstration ------------------------------------------------- */
+
+.canvas {
+  position: relative;
+  width: 100%;
+  max-width: var(--layout-canvas-width);
+  padding-inline: var(--layout-gutter);
+  padding-block: var(--spacing-2xl);
+  background: var(--color-background-primary);
+  border: var(--border-lg) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+/* The gutter, drawn. Two bands of exactly --layout-gutter against the frame
+   edges, so the inset can be measured rather than believed. */
+.gutter {
+  position: absolute;
+  inset-block: 0;
+  width: var(--layout-gutter);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-accent-primary) 0,
+    var(--color-accent-primary) 1px,
+    transparent 1px,
+    transparent var(--spacing-sm)
+  );
+}
+
+.gutterStart {
+  inset-inline-start: 0;
+}
+
+.gutterEnd {
+  inset-inline-end: 0;
+}
+
+.canvasContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-inline);
+}
+
+.canvasBlock {
+  padding: var(--spacing-lg);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+}
+
+.canvasScroller {
+  max-height: calc(var(--spacing-4xl) * 3);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}

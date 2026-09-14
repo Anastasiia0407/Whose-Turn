@@ -1,0 +1,19 @@
+{
+  "name": "whose-turn-repo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Whose Turn? — the app and its design-system documentation site, sharing one dependency tree.",
+  "workspaces": [
+    "whose-turn",
+    "system-site"
+  ],
+  "scripts": {
+    "dev": "npm --workspace whose-turn run dev",
+    "dev:site": "npm --workspace system-site run dev",
+    "build": "npm --workspace whose-turn run build",
+    "build:site": "npm --workspace system-site run build",
+    "typecheck": "npm --workspace whose-turn run typecheck && npm --workspace system-site run typecheck",
+    "lint": "npm --workspace whose-turn run lint && npm --workspace system-site run lint",
+    "test": "npm --workspace whose-turn run test"
+  }
+}

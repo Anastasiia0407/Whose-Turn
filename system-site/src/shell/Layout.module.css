@@ -1,0 +1,182 @@
+/* Breakpoints, and why they are where they are:
+     768   the sidebar stops being affordable next to an 816px column
+    1280   there is finally room for a third column without squeezing the
+           content below its Figma-matched 816px                          */
+
+.skipLink {
+  position: absolute;
+  left: var(--spacing-xl);
+  top: var(--spacing-xl);
+  z-index: 20;
+  padding: var(--spacing-inline) var(--spacing-2xl);
+  background: var(--color-background-surface);
+  color: var(--color-text-heading);
+  border: var(--border-lg) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-hard-lg);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  text-decoration: none;
+  /* Off-screen until focused, rather than display:none, so it stays in the tab
+     order and is the first thing a keyboard user reaches. */
+  transform: translateY(calc(-100% - var(--spacing-4xl)));
+}
+
+.skipLink:focus-visible {
+  transform: none;
+}
+
+/* -- Brand ------------------------------------------------------------ */
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.brandName {
+  font-family: var(--type-h1-family);
+  font-weight: var(--type-h1-weight);
+  font-size: var(--type-sheet-title-size);
+  line-height: 1.2;
+  color: var(--color-text-heading);
+}
+
+.brandAccent {
+  color: var(--color-accent-primary);
+}
+
+.brandSuffix {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* -- Mobile bar ------------------------------------------------------- */
+
+.mobileBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+  min-height: var(--site-header-height);
+  padding-inline: var(--spacing-xl);
+  background: var(--color-background-primary);
+  border-bottom: var(--border-sm) solid var(--color-border-default);
+}
+
+.menuButton {
+  flex-shrink: 0;
+  min-height: var(--layout-tap-target);
+  min-width: var(--layout-tap-target);
+  padding-inline: var(--spacing-2xl);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-hard-sm);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+}
+
+@media (min-width: 768px) {
+  .mobileBar {
+    display: none;
+  }
+}
+
+/* -- Shell ------------------------------------------------------------ */
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .shell {
+    grid-template-columns: var(--site-sidebar-width) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .shell {
+    grid-template-columns:
+      var(--site-sidebar-width)
+      minmax(0, 1fr)
+      var(--site-toc-width);
+  }
+}
+
+/* -- Sidebar ---------------------------------------------------------- */
+
+.sidebar {
+  display: none;
+  border-bottom: var(--border-sm) solid var(--color-border-default);
+}
+
+.sidebarOpen {
+  display: block;
+}
+
+.sidebarBrand {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: 0;
+    max-height: 100dvh;
+    overflow-y: auto;
+    border-bottom: none;
+    border-right: var(--border-sm) solid var(--color-border-default);
+  }
+
+  .sidebarBrand {
+    display: block;
+    padding: var(--spacing-3xl) var(--spacing-xl) 0;
+  }
+}
+
+/* -- Content ---------------------------------------------------------- */
+
+.main {
+  min-width: 0;
+}
+
+.content {
+  /* 816px — the width of the Figma documentation frames, so a reader comparing
+     the two sees the same measure and the same line breaks. */
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  padding: var(--spacing-4xl) var(--spacing-xl) calc(var(--spacing-4xl) * 2);
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding-inline: var(--spacing-4xl);
+  }
+}
+
+/* -- Table of contents ------------------------------------------------ */
+
+.tocColumn {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .tocColumn {
+    display: block;
+    min-width: 0;
+  }
+}

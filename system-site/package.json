@@ -1,0 +1,31 @@
+{
+  "name": "system-site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Whose Turn? design-system documentation. Imports the app's real components and token layer — it never copies them.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "figma:capture": "node scripts/figma-capture.mjs",
+    "figma:diff": "node scripts/tokens-diff.mjs",
+    "figma:check": "node scripts/check-drift.mjs",
+    "figma:coverage": "node scripts/coverage.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  }
+}

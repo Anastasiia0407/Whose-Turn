@@ -1,0 +1,95 @@
+.swatch {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-sm);
+  min-width: 0;
+}
+
+.chip,
+.missing {
+  flex-shrink: 0;
+  width: calc(var(--layout-tap-target) + var(--spacing-xl));
+  min-height: var(--layout-tap-target);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+}
+
+/* A token that does not resolve gets a drawn absence, not a blank box that
+   could be mistaken for white. */
+.missing {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--site-hairline) 0,
+    var(--site-hairline) var(--border-sm),
+    transparent var(--border-sm),
+    transparent var(--spacing-md)
+  );
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  min-width: 0;
+}
+
+.value {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+  text-transform: uppercase;
+  padding-inline: var(--spacing-md);
+}
+
+.absentName {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  color: var(--color-text-heading);
+  padding-inline: var(--spacing-md);
+  overflow-wrap: anywhere;
+}
+
+.alias,
+.description,
+.absent {
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+  padding-inline: var(--spacing-md);
+  overflow-wrap: anywhere;
+}
+
+.alias {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-md);
+}
+
+.aliasLabel {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  text-transform: uppercase;
+}
+
+.alias code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--color-text-heading);
+}
+
+.contrast {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-md) 0;
+  border-top: var(--border-sm) solid var(--site-hairline);
+}

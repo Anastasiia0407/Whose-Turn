@@ -1,0 +1,21 @@
+.value {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Absent is stated in words, not implied by an empty cell. */
+.absent {
+  display: inline-block;
+  padding: 0 var(--spacing-md);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-danger);
+  color: var(--color-text-on-accent);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+}

@@ -1,0 +1,55 @@
+.toc {
+  position: sticky;
+  top: var(--spacing-4xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-4xl) 0;
+  max-height: calc(100dvh - var(--spacing-4xl));
+  overflow-y: auto;
+}
+
+.title {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  /* The rule doubles as the column's left edge, echoing the product's outlines
+     at a weight that does not compete with the content. */
+  border-left: var(--border-sm) solid var(--site-hairline);
+}
+
+.link {
+  display: block;
+  padding: var(--spacing-xs) var(--spacing-inline);
+  margin-left: calc(var(--border-sm) * -1);
+  border-left: var(--border-sm) solid transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-body-line);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.link:hover {
+  color: var(--color-text-heading);
+}
+
+.nested {
+  padding-left: var(--spacing-3xl);
+}
+
+.active {
+  color: var(--color-text-heading);
+  border-left-color: var(--color-accent-primary);
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+}

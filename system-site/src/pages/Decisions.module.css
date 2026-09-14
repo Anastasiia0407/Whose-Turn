@@ -1,0 +1,63 @@
+.measurement {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  white-space: nowrap;
+}
+
+.convention {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-inline);
+  padding: var(--spacing-2xl);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-left-width: var(--spacing-md);
+  border-left-color: var(--color-accent-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-sm);
+  min-width: 0;
+}
+
+.conventionTitle {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+  line-height: var(--type-body-bold-line);
+}
+
+.conventionBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-2xs);
+}
+
+@media (min-width: 768px) {
+  .conventionBody {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--spacing-md) var(--spacing-2xl);
+  }
+}
+
+.term {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.detail {
+  color: var(--color-text-primary);
+  line-height: var(--type-body-line);
+}
+
+.detail + .term {
+  margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .detail + .term {
+    margin-top: 0;
+  }
+}

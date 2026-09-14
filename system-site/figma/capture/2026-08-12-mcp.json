@@ -1,0 +1,234 @@
+{
+  "$comment": [
+    "RAW CAPTURE — exactly what Figma MCP returned, per node, nothing added.",
+    "",
+    "This file is the evidence behind tokens.snapshot.json. It is committed so a",
+    "reader can check the snapshot against the thing it was derived from, and so a",
+    "later capture can be diffed against this one rather than against a summary.",
+    "",
+    "Produced by an agent (or a human) running get_variable_defs over the node",
+    "list below and pasting each response verbatim. It is NOT machine-generated:",
+    "Figma MCP is an agent tool, not something a Node script can call. See",
+    "figma/README.md for the procedure.",
+    "",
+    "COVERAGE IS BINDING-DRIVEN. get_variable_defs returns only variables actually",
+    "bound somewhere in the queried subtree, so a variable that exists in the file",
+    "but is used by nothing cannot appear here at any node. That is a limit of the",
+    "method, not a claim that such variables do not exist."
+  ],
+  "fileKey": "ow8Eo53KIe4QrORvA7TQ2E",
+  "capturedAt": "2026-08-12",
+  "tool": "figma-mcp:get_variable_defs",
+  "server": "remote (fileKey-addressed)",
+  "sweeps": [
+    {
+      "nodeId": "323:23",
+      "label": "Components page",
+      "variables": {
+        "color/text/onAccent": "#ffffff",
+        "font/size/body": "16",
+        "font/style/display": "Bold",
+        "font/family/display": "Corben",
+        "font/line/body": "24",
+        "Body/Bold": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/body, weight: 700, lineHeight: font/line/body, letterSpacing: 0)",
+        "spacing/md": "8",
+        "spacing/2xs": "2",
+        "spacing/xl": "16",
+        "radius/full": "100",
+        "border/lg": "3",
+        "color/accent/primary": "#d85a38",
+        "color/border/default": "#332014",
+        "color/text/heading": "#332014",
+        "color/background/primary": "#fff9ee",
+        "border/sm": "2",
+        "spacing/3xl": "24",
+        "color/background/surface": "#ffffff",
+        "radius/sm": "10",
+        "color/accent/secondary": "#e8a838",
+        "color/accent/destructive": "#d83838",
+        "radius/avatar": "18",
+        "border/xs": "1",
+        "color/member/1": "#d85a38",
+        "font/size/label": "12",
+        "Label/Section": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/label, weight: 700, lineHeight: 100, letterSpacing: 0)",
+        "spacing/lg": "14",
+        "spacing/2xl": "20",
+        "radius/md": "24",
+        "color/accent/success": "#02ab0d",
+        "spacing/inline": "12",
+        "Label/Pill": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/label, weight: 700, lineHeight: 100, letterSpacing: 0)",
+        "color/background/scrim": "#33201473",
+        "color/text/primary": "#1a1818",
+        "font/size/title": "20",
+        "Heading/Sheet": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/title, weight: 700, lineHeight: 100, letterSpacing: 0)",
+        "font/size/h1": "30",
+        "font/line/h1": "40",
+        "Heading/H1": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/h1, weight: 700, lineHeight: font/line/h1, letterSpacing: 0)",
+        "color/text/secondary": "#7a685c",
+        "font/style/body": "Medium",
+        "font/family/body": "DM Sans",
+        "Body/Regular": "Font(family: \"font/family/body\", style: font/style/body, size: font/size/body, weight: 500, lineHeight: font/line/body, letterSpacing: 0)",
+        "spacing/xs": "4",
+        "spacing/sheet-top": "32",
+        "spacing/4xl": "40",
+        "shadow/hard-lg": "Effect(type: DROP_SHADOW, color: #332014, offset: (4, 4), radius: 0, spread: 0)",
+        "color/member/2": "#e8a838",
+        "font/style/body-strong": "SemiBold",
+        "font/line/wheel": "16",
+        "Label/Wheel": "Font(family: \"font/family/body\", style: font/style/body-strong, size: font/size/label, weight: 600, lineHeight: font/line/wheel, letterSpacing: 0)",
+        "color/amber/500": "#e8a838"
+      }
+    },
+    {
+      "nodeId": "179:44",
+      "label": "auth / login",
+      "variables": {
+        "color/text/primary": "#1a1818",
+        "font/size/body": "16",
+        "font/style/display": "Bold",
+        "font/family/display": "Corben",
+        "font/line/body": "24",
+        "spacing/2xs": "2",
+        "spacing/sm": "6",
+        "spacing/3xl": "24",
+        "font/size/hero": "40",
+        "color/text/heading": "#332014",
+        "color/accent/primary": "#d85a38",
+        "Heading/Hero": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/hero, weight: 700, lineHeight: 1.149999976158142, letterSpacing: 0)",
+        "color/text/secondary": "#7a685c",
+        "spacing/xl": "16",
+        "font/size/label": "12",
+        "spacing/lg": "14",
+        "spacing/2xl": "20",
+        "radius/md": "24",
+        "border/sm": "2",
+        "color/background/primary": "#fff9ee",
+        "color/border/default": "#332014",
+        "spacing/md": "8",
+        "color/text/onAccent": "#ffffff",
+        "radius/full": "100",
+        "border/lg": "3",
+        "color/orange/600": "#d85a38",
+        "spacing/4xl": "40",
+        "spacing/5xl": "96"
+      }
+    },
+    {
+      "nodeId": "157:45",
+      "label": "fate / dice (3 members)",
+      "variables": {
+        "color/text/primary": "#1a1818",
+        "spacing/sm": "6",
+        "spacing/3xl": "24",
+        "border/sm": "2",
+        "color/border/default": "#332014",
+        "color/background/surface": "#ffffff",
+        "spacing/2xs": "2",
+        "radius/sm": "10",
+        "color/text/heading": "#332014",
+        "font/size/label": "12",
+        "spacing/md": "8",
+        "spacing/xl": "16",
+        "radius/md": "24",
+        "color/accent/success": "#02ab0d",
+        "radius/avatar": "18",
+        "border/xs": "1",
+        "color/member/1": "#d85a38",
+        "spacing/inline": "12",
+        "spacing/2xl": "20",
+        "color/member/2": "#e8a838",
+        "color/member/3": "#02ab0d",
+        "color/amber/500": "#e8a838",
+        "color/text/secondary": "#7a685c",
+        "color/text/onAccent": "#ffffff",
+        "radius/full": "100",
+        "border/lg": "3",
+        "color/accent/primary": "#d85a38",
+        "spacing/4xl": "40",
+        "color/background/primary": "#fff9ee"
+      }
+    },
+    {
+      "nodeId": "1:39",
+      "label": "result",
+      "variables": {
+        "color/brown/800": "#332014",
+        "font/size/h1": "30",
+        "font/line/h1": "40",
+        "spacing/xs": "4",
+        "spacing/inline": "12",
+        "radius/sm": "10"
+      }
+    },
+    {
+      "nodeId": "92:331",
+      "label": "fate / coin",
+      "variables": {
+        "font/size/coin": "72",
+        "font/line/coin": "80",
+        "Display/Coin": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/coin, weight: 700, lineHeight: font/line/coin, letterSpacing: 0)",
+        "shadow/hard-lg": "Effect(type: DROP_SHADOW, color: #332014, offset: (4, 4), radius: 0, spread: 0)"
+      }
+    },
+    {
+      "nodeId": "82:10",
+      "label": "onboarding / add-members",
+      "variables": {
+        "color/track/fill": "#332014",
+        "color/track/default": "#e5d9cf"
+      }
+    },
+    {
+      "nodeId": "70:8",
+      "label": "home, edit / delete mode",
+      "variables": {
+        "color/accent/destructive": "#d83838",
+        "color/accent/secondary": "#e8a838",
+        "color/brown/800": "#332014"
+      }
+    },
+    {
+      "nodeId": "86:78",
+      "label": "fate / wheel",
+      "variables": {
+        "font/style/body-strong": "SemiBold",
+        "font/line/wheel": "16",
+        "Label/Wheel": "Font(family: \"font/family/body\", style: font/style/body-strong, size: font/size/label, weight: 600, lineHeight: font/line/wheel, letterSpacing: 0)"
+      }
+    },
+    {
+      "nodeId": "104:578",
+      "label": "sheet / select fate-mode (3+ members)",
+      "variables": {
+        "color/background/scrim": "#33201473",
+        "font/size/title": "20",
+        "Heading/Sheet": "Font(family: \"font/family/display\", style: font/style/display, size: font/size/title, weight: 700, lineHeight: 100, letterSpacing: 0)",
+        "spacing/sheet-top": "32",
+        "radius/avatar": "18",
+        "color/member/1": "#d85a38",
+        "color/member/2": "#e8a838",
+        "color/member/3": "#02ab0d"
+      }
+    },
+    {
+      "nodeId": "340:35",
+      "label": "component / HomeIndicator",
+      "variables": {
+        "radius/sm": "10",
+        "color/text/primary": "#1a1818",
+        "spacing/2xs": "2",
+        "spacing/2xl": "20",
+        "spacing/md": "8"
+      }
+    },
+    {
+      "nodeId": "345:99",
+      "label": "component / CoinFace",
+      "variables": {
+        "radius/full": "100",
+        "color/member/1": "#d85a38",
+        "color/border/default": "#332014"
+      }
+    }
+  ]
+}

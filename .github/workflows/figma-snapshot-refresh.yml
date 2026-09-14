@@ -1,0 +1,105 @@
+name: Figma snapshot refresh
+
+# Weekly reminder that the snapshot is a photograph, not a feed.
+#
+# WHAT THIS CAN AND CANNOT DO, HONESTLY
+#
+# It cannot refresh the snapshot by itself. Reading Figma variables without a
+# human needs the REST Variables API, which is Enterprise-only; this file is on
+# a pro plan and the endpoint 403s. The working path — Figma MCP — is an agent
+# tool that runs on someone's machine, not in a runner.
+#
+# So this job does the part it genuinely can: it re-runs the check against the
+# committed snapshot, and it opens an issue when the snapshot has gone stale
+# enough to be worth a look. A human then runs the capture and opens a PR.
+#
+# It never commits, never merges, never edits the token layer. A pipeline that
+# quietly rewrote either side would be the museum this is meant to prevent —
+# just a tidier one.
+
+on:
+  schedule:
+    # Mondays, 08:00 UTC.
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    name: Report snapshot age and drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Measure snapshot age
+        id: age
+        run: |
+          CAPTURED=$(node -p "require('./system-site/figma/tokens.snapshot.json').capturedAt")
+          AGE=$(( ( $(date +%s) - $(date -d "$CAPTURED" +%s) ) / 86400 ))
+          echo "captured=$CAPTURED" >> "$GITHUB_OUTPUT"
+          echo "days=$AGE" >> "$GITHUB_OUTPUT"
+          echo "Snapshot captured $CAPTURED — $AGE days ago."
+
+      - name: Run the drift check
+        id: check
+        continue-on-error: true
+        run: |
+          {
+            echo '## Drift check'
+            echo '```'
+            npm --prefix system-site run figma:check 2>&1 || true
+            echo '```'
+          } > report.md
+
+      - name: Append the token diff
+        run: |
+          {
+            echo ''
+            echo '## Token diff'
+            echo '```'
+            npm --prefix system-site run figma:diff 2>&1 || true
+            echo '```'
+          } >> report.md
+
+      # Opened only when the snapshot is over a fortnight old or something has
+      # actually drifted. A weekly issue that always says "all fine" gets
+      # filtered to a folder nobody opens.
+      - name: Open a report issue
+        if: steps.check.outcome == 'failure' || fromJSON(steps.age.outputs.days) > 14
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+            const body = [
+              `The Figma snapshot was captured on **${{ steps.age.outputs.captured }}** `
+                + `(${{ steps.age.outputs.days }} days ago).`,
+              '',
+              'To refresh it, on a machine with Figma MCP available:',
+              '',
+              '1. Sweep the node list in `system-site/figma/README.md` with `get_variable_defs`.',
+              '2. Save the responses as `system-site/figma/capture/<date>-mcp.json`.',
+              '3. `npm --prefix system-site run figma:capture -- --from-mcp <date>-mcp.json`',
+              '4. `npm --prefix system-site run figma:diff` and open a PR with the result.',
+              '',
+              'This job does not refresh or merge anything itself — see the workflow file for why.',
+              '',
+              fs.readFileSync('report.md', 'utf8'),
+            ].join('\n')
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Figma snapshot is ${{ steps.age.outputs.days }} days old`,
+              labels: ['design-system'],
+              body,
+            })

@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* Mirrors whose-turn/tsconfig.app.json option for option. The `@ds` alias
+       pulls the app's own .tsx files into THIS program, so they are typechecked
+       under these settings — any divergence would either reject code the app
+       accepts, or accept code the app rejects. Keep the two in step. */
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* The one addition: the code-sharing alias, matching resolve.alias in
+       vite.config.ts. Both must agree or the editor and the bundler disagree.
+
+       No `baseUrl` — TypeScript 6 deprecates it, and without one `paths` is
+       resolved relative to this file, which is what we want anyway. */
+    "paths": {
+      "@ds/*": ["../whose-turn/src/*"]
+    }
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,120 @@
+{
+  "$comment": [
+    "AUTHORED — how a Figma variable path corresponds to the code token layer.",
+    "",
+    "Without this, every renamed token reads as 'Figma only' PLUS 'code only', and",
+    "a rename is indistinguishable from a genuine drift. Four tokens in this system",
+    "are renamed on the way into code; they are marked `rename: true` so the report",
+    "can say so instead of raising two false alarms.",
+    "",
+    "`compare` selects the normaliser used before two values are called equal:",
+    "  color            #RRGGBB, case-insensitive",
+    "  color8           #RRGGBBAA in Figma vs rgb()/rgba() in CSS",
+    "  length           Figma's bare number vs CSS's px",
+    "  fontWeight       Figma's style name (Bold) vs CSS's numeric weight (700)",
+    "  fontFamilyHead   Figma's single family vs the FIRST family of the CSS stack",
+    "  composite        a Figma text style; compared through its atoms, not directly",
+    "",
+    "`code: null` means the code layer has no equivalent. `codeExpr` records where",
+    "the value lives instead when it is not a custom property at all."
+  ],
+
+  "color/accent/primary": { "code": "--color-accent-primary", "compare": "color" },
+  "color/accent/secondary": { "code": "--color-accent-secondary", "compare": "color" },
+  "color/accent/success": { "code": "--color-accent-success", "compare": "color" },
+  "color/accent/destructive": {
+    "code": "--color-accent-danger",
+    "compare": "color",
+    "rename": true,
+    "note": "Figma says destructive, code says danger. Same value."
+  },
+  "color/background/primary": { "code": "--color-background-primary", "compare": "color" },
+  "color/background/surface": { "code": "--color-background-surface", "compare": "color" },
+  "color/background/scrim": {
+    "code": "--color-scrim",
+    "compare": "color8",
+    "rename": true,
+    "note": "Figma nests it under background; code does not."
+  },
+  "color/border/default": { "code": "--color-border-default", "compare": "color" },
+  "color/text/primary": { "code": "--color-text-primary", "compare": "color" },
+  "color/text/secondary": { "code": "--color-text-secondary", "compare": "color" },
+  "color/text/heading": { "code": "--color-text-heading", "compare": "color" },
+  "color/text/onAccent": { "code": "--color-text-on-accent", "compare": "color" },
+  "color/track/default": {
+    "code": "--color-progress-track",
+    "compare": "color",
+    "rename": true,
+    "note": "Figma names the track, code names the progress bar."
+  },
+  "color/track/fill": {
+    "code": null,
+    "compare": "color",
+    "note": "No code token. ProgressBar fills with the primitive --color-brown-800 directly."
+  },
+
+  "color/brown/800": { "code": "--color-brown-800", "compare": "color" },
+  "color/orange/600": { "code": null, "compare": "color", "note": "No primitive shelf in code; the value is carried by --color-accent-primary." },
+  "color/amber/500": { "code": null, "compare": "color", "note": "Carried by --color-accent-secondary." },
+
+  "color/member/1": { "code": null, "codeExpr": "MEMBER_PALETTE[0]", "compare": "color" },
+  "color/member/2": { "code": null, "codeExpr": "MEMBER_PALETTE[1]", "compare": "color" },
+  "color/member/3": { "code": null, "codeExpr": "MEMBER_PALETTE[2]", "compare": "color" },
+  "color/member/4": { "code": null, "codeExpr": "MEMBER_PALETTE[3]", "compare": "color" },
+  "color/member/5": { "code": null, "codeExpr": "MEMBER_PALETTE[4]", "compare": "color" },
+  "color/member/6": { "code": null, "codeExpr": "MEMBER_PALETTE[5]", "compare": "color" },
+
+  "spacing/2xs": { "code": "--spacing-2xs", "compare": "length" },
+  "spacing/xs": { "code": "--spacing-xs", "compare": "length" },
+  "spacing/sm": { "code": "--spacing-sm", "compare": "length" },
+  "spacing/md": { "code": "--spacing-md", "compare": "length" },
+  "spacing/inline": { "code": "--spacing-inline", "compare": "length" },
+  "spacing/lg": { "code": "--spacing-lg", "compare": "length" },
+  "spacing/xl": { "code": "--spacing-xl", "compare": "length" },
+  "spacing/2xl": { "code": "--spacing-2xl", "compare": "length" },
+  "spacing/3xl": { "code": "--spacing-3xl", "compare": "length" },
+  "spacing/sheet-top": { "code": "--spacing-sheet-top", "compare": "length" },
+  "spacing/4xl": { "code": "--spacing-4xl", "compare": "length" },
+  "spacing/5xl": { "code": null, "compare": "length", "note": "Login hero spacing. No code token." },
+
+  "radius/sm": { "code": "--radius-sm", "compare": "length" },
+  "radius/avatar": { "code": "--radius-avatar", "compare": "length" },
+  "radius/md": { "code": "--radius-md", "compare": "length" },
+  "radius/full": { "code": "--radius-full", "compare": "length" },
+
+  "border/xs": { "code": null, "compare": "length", "note": "No code token. MemberAvatar writes 1px directly on the sm size." },
+  "border/sm": { "code": "--border-sm", "compare": "length" },
+  "border/lg": { "code": "--border-lg", "compare": "length" },
+
+  "shadow/hard-lg": { "code": "--shadow-hard-lg", "compare": "composite", "note": "Effect variable. Its offset is compared through --shadow-offset-lg." },
+
+  "font/size/h1": { "code": "--type-h1-size", "compare": "length" },
+  "font/line/h1": { "code": "--type-h1-line", "compare": "length" },
+  "font/size/title": { "code": "--type-sheet-title-size", "compare": "length" },
+  "font/size/body": { "code": ["--type-body-size", "--type-body-bold-size"], "compare": "length" },
+  "font/line/body": { "code": ["--type-body-line", "--type-body-bold-line"], "compare": "length" },
+  "font/size/label": { "code": "--type-label-size", "compare": "length" },
+  "font/size/hero": { "code": null, "compare": "length", "note": "Login headline. No code token." },
+  "font/size/coin": { "code": null, "compare": "length", "note": "Coin face. No code token." },
+  "font/line/coin": { "code": null, "compare": "length", "note": "Coin face. No code token." },
+  "font/line/wheel": { "code": null, "compare": "length", "note": "Wheel labels. No code token; Wheel.module.css drops the line height." },
+
+  "font/family/display": { "code": "--font-display", "compare": "fontFamilyHead" },
+  "font/family/body": { "code": "--font-body", "compare": "fontFamilyHead" },
+  "font/style/display": {
+    "code": ["--type-h1-weight", "--type-body-bold-weight", "--type-label-weight"],
+    "compare": "fontWeight"
+  },
+  "font/style/body": { "code": "--type-body-weight", "compare": "fontWeight" },
+  "font/style/body-strong": { "code": null, "compare": "fontWeight", "note": "SemiBold 600, used by Label/Wheel. No code token." },
+
+  "Heading/H1": { "code": null, "compare": "composite" },
+  "Heading/Hero": { "code": null, "compare": "composite" },
+  "Heading/Sheet": { "code": null, "compare": "composite" },
+  "Body/Bold": { "code": null, "compare": "composite" },
+  "Body/Regular": { "code": null, "compare": "composite" },
+  "Label/Section": { "code": null, "compare": "composite" },
+  "Label/Pill": { "code": null, "compare": "composite" },
+  "Label/Wheel": { "code": null, "compare": "composite" },
+  "Display/Coin": { "code": null, "compare": "composite" }
+}

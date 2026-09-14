@@ -1,0 +1,59 @@
+.specimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-2xl);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+  min-width: 0;
+}
+
+.sample {
+  color: var(--color-text-heading);
+  /* The specimen must not force the page wider than the reader's viewport. */
+  overflow-wrap: anywhere;
+}
+
+.spec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xl) var(--spacing-4xl);
+  padding-top: var(--spacing-xl);
+  border-top: var(--border-sm) solid var(--site-hairline);
+}
+
+.specItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  min-width: 0;
+}
+
+.specTerm {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.specValue {
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  overflow-wrap: anywhere;
+}
+
+.specToken {
+  min-width: 0;
+  /* Pull the copy button back so its own padding does not indent the column. */
+  margin-left: calc(var(--spacing-md) * -1);
+}
+
+.absent {
+  color: var(--color-text-secondary);
+}

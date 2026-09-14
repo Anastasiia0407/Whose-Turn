@@ -1,0 +1,51 @@
+name: Design system drift
+
+# Runs on every pull request that touches either side of the system.
+#
+# NO FIGMA ACCESS IS NEEDED. The check compares the code's token layer against
+# the snapshot committed in system-site/figma/, which is exactly why that
+# snapshot is committed. Nothing here needs a token, and nothing here can reach
+# out to Figma — refreshing the snapshot is a separate, human-run step.
+
+on:
+  pull_request:
+    paths:
+      - 'whose-turn/src/styles/tokens.css'
+      - 'whose-turn/src/tokens/**'
+      - 'whose-turn/src/ui/**'
+      - 'whose-turn/src/fate/**'
+      - 'whose-turn/src/features/**'
+      - 'system-site/figma/**'
+      - 'system-site/src/mappings/**'
+      - 'system-site/scripts/**'
+      - '.github/workflows/design-system-drift.yml'
+  workflow_dispatch:
+
+jobs:
+  drift:
+    name: Figma ↔ code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # The workspace root install. The check itself needs only `typescript`,
+      # which the site workspace already depends on.
+      - run: npm ci
+
+      - name: Check for drift
+        run: npm --prefix system-site run figma:check
+
+      # Only on failure: the full reports make the diff readable in the log
+      # without anyone having to reproduce it locally first.
+      - name: Full token diff
+        if: failure()
+        run: npm --prefix system-site run figma:diff
+
+      - name: Full coverage table
+        if: failure()
+        run: npm --prefix system-site run figma:coverage

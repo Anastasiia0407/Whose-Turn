@@ -1,0 +1,86 @@
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  }
+}
+
+.avatars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-2xl);
+  background: var(--color-background-surface);
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.avatarCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.avatarSlot {
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* The white-initial demonstration. Deliberately shown so the reader can see the
+   failure rather than take the ratio on trust. */
+.inkDemo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--spacing-4xl) - var(--spacing-md));
+  height: calc(var(--spacing-4xl) - var(--spacing-md));
+  border: var(--border-sm) solid var(--color-border-default);
+  border-radius: var(--radius-avatar);
+  font-family: var(--type-label-family);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  text-transform: uppercase;
+}
+
+.inkOn {
+  color: var(--color-text-heading);
+}
+
+.whiteOn {
+  color: var(--color-text-on-accent);
+}
+
+.pairRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-lg) 0;
+  border-bottom: var(--border-sm) solid var(--site-hairline);
+}
+
+.pairLabel {
+  min-width: 8rem;
+  font-family: var(--type-body-bold-family);
+  font-weight: var(--type-body-bold-weight);
+  font-size: var(--type-body-bold-size);
+}
+
+.pairReadouts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
